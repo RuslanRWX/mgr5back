@@ -4,8 +4,8 @@ import sys
 import os
 
 pid = str(os.getpid())
-pidfile = "/tmp/vdsback.pid"
-
+pidfile = '/tmp/vdsback.pid'
+BackDir='/tmp'
 
 def Check():
     if os.path.isfile(pidfile):
@@ -53,17 +53,44 @@ def MysqlConn():
             LvmBackup(R[0],R[1])
         cnx.close()
 
+def conftp(nameb,user,url,password ):
+    from ftplib import FTP
+    ftp = FTP(url)
+    ftp.login(user, password)
+    #print ftp.mkd(nameb)
+    if nameb in ftp.nlst('') :
+        pass
+    else :
+        print 'NO Dir, Start create'
+        ftp.mkd(nameb)
+        
+    file = 'README.md'
+    ftp.cwd(nameb)
+    ftp.storbinary('STOR '+file, open(file, 'rb'))
+    ftp.quit() 
 
-
+def ftpget():
+    import xmltodict
+    with open('/usr/local/mgr5/etc/.vmmgr-backup/storages/st_1') as fd:
+        doc = xmltodict.parse(fd.read())
+        nameb=doc['doc']['name']
+        passftp=doc['doc']['settings']['password']
+        urlftp=doc['doc']['settings']['url']
+        userftp=doc['doc']['settings']['username']
+    conftp(nameb,userftp,urlftp,passftp)
+    
+    
+    
 def Main(): 
     #Check()
    # print "good"
     #import time
     #time.sleep(10)
-    MysqlGet()
-    MysqlConn()
-    print VarMysql['DBHost']
+    #MysqlGet()
+    #MysqlConn()
+    #print VarMysql['DBHost']
     #os.remove(pidfile)
+    ftpget()
 Main()
 
 
