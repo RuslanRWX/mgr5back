@@ -22,9 +22,8 @@ def MysqlGet():
     for line in open(FileDB,'r').readlines():
         parts = line.split() # split line into parts
         if len(parts) > 1: 
-            #print parts[0]   # print column 2
             VarMysql[parts[0]] = parts[1]
-           # print VarMysql['DBHost']
+    
 
 def Main(): 
     #Check()
