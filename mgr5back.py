@@ -17,7 +17,8 @@ def Check():
 def MysqlGet():
     global VarMysql
     VarMysql={}
-    FileDB="/usr/local/mgr5/etc/vmmgr.conf.d/db.conf"
+    #FileDB="/usr/local/mgr5/etc/vmmgr.conf.d/db.conf"
+    FileDB='/root/db.conf'
     St=['DBHost','DBUser','DBPassword','DBName']
     for line in open(FileDB,'r').readlines():
         parts = line.split() # split line into parts
@@ -28,11 +29,13 @@ def LvmBackup(Name, Size, Pool):
     import datetime
     date=datetime.datetime.now().strftime("%Y%m%d%H%M%S")
     NameSnap=Name+"_"+date
+    PoolName='/dev/'+Pool+"/"+Name
     #print NameSnap
+    #print PoolName
     #print Size
     #os.system('lvcreate -LSizeM -s -n NameSnap-snapshot '+Name+')
     #cmd="echo \"hello %s\""%(Size)
-    cmdCreateLVM="lvcreate -L%sG -s -n %s-snapshot %s"%(Size, Name, )
+    cmdCreateLVM="lvcreate -L%sG -s -n %s-snapshot %s"%(Size,Name,PoolName )
     os.system(cmd)
     #print "#########",date,"##############"
 
