@@ -30,7 +30,7 @@ def LvmBackup(Name, Size, Pool):
     date=datetime.datetime.now().strftime("%Y%m%d%H%M%S")
     NameSnap=Name+"_"+date
     PoolName='/dev/'+Pool+"/"+Name
-    #print NameSnap
+    print "Start creating LVM Snapshote "+Name
     #print PoolName
     #print Size
     #os.system('lvcreate -LSizeM -s -n NameSnap-snapshot '+Name+')
