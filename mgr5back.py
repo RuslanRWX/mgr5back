@@ -1,4 +1,4 @@
-#!/usr/bin/python -t
+#!/usr/bin/python 
 
 import sys
 import os
@@ -24,14 +24,22 @@ def MysqlGet():
         if len(parts) > 1: 
             VarMysql[parts[0]] = parts[1]
 
-def LvmBackup(Name, Size):
-    print Name
-    print Size
-    print "#######################"
+def LvmBackup(Name, Size, Pool):
+    import datetime
+    date=datetime.datetime.now().strftime("%Y%m%d%H%M%S")
+    NameSnap=Name+"_"+date
+    #print NameSnap
+    #print Size
+    #os.system('lvcreate -LSizeM -s -n NameSnap-snapshot '+Name+')
+    #cmd="echo \"hello %s\""%(Size)
+    cmdCreateLVM="lvcreate -L%sG -s -n %s-snapshot %s"%(Size, Name, )
+    os.system(cmd)
+    #print "#########",date,"##############"
 
 
 
 def MysqlConn():
+    MysqlGet()
     import mysql.connector
     from mysql.connector import errorcode
     try:
@@ -47,13 +55,13 @@ def MysqlConn():
             print(err)
     else:
         cur = cnx.cursor()
-        Res=cur.execute("SELECT name,vsize FROM vm")
+        Res=cur.execute("select vm.name, vm.vsize, volume.pool from volume  join vm on vm.name =volume.name;")
         Servs=list(cur.fetchall())
         for R in Servs:
-            LvmBackup(R[0],R[1])
+            LvmBackup(R[0],R[1], R[2])
         cnx.close()
 
-def conftp(nameb,user,url,password ):
+def conftp(nameb,user,url,password, file ):
     from ftplib import FTP
     ftp = FTP(url)
     ftp.login(user, password)
@@ -63,13 +71,11 @@ def conftp(nameb,user,url,password ):
     else :
         print 'NO Dir, Start create'
         ftp.mkd(nameb)
-        
-    file = 'README.md'
     ftp.cwd(nameb)
     ftp.storbinary('STOR '+file, open(file, 'rb'))
     ftp.quit() 
 
-def ftpget():
+def ftpget(file):
     import xmltodict
     with open('/usr/local/mgr5/etc/.vmmgr-backup/storages/st_1') as fd:
         doc = xmltodict.parse(fd.read())
@@ -77,20 +83,22 @@ def ftpget():
         passftp=doc['doc']['settings']['password']
         urlftp=doc['doc']['settings']['url']
         userftp=doc['doc']['settings']['username']
-    conftp(nameb,userftp,urlftp,passftp)
+    conftp(nameb,userftp,urlftp,passftp, file)
     
-    
-    
+ # Need create LVM to file with date
+ # Need clean file and clean ftp store 
+ 
+ 
 def Main(): 
     #Check()
    # print "good"
     #import time
     #time.sleep(10)
     #MysqlGet()
-    #MysqlConn()
+    MysqlConn()
     #print VarMysql['DBHost']
     #os.remove(pidfile)
-    ftpget()
+    #ftpget()
 Main()
 
 
