@@ -30,6 +30,7 @@ def LvmBackup(Name, Size, Pool):
     date=datetime.datetime.now().strftime("%Y%m%d%H%M%S")
     PoolName='/dev/'+Pool+"/"+Name
     FileImg=BackDir+"/"+Name+"_"+date
+    NameImgFtp=Name+"_"+date
     print "Start creating LVM Snapshote "+Name
     #print FileBack
     cmdCreateLVM="lvcreate -L%sG -s -n %s-snapshot %s"%(Size,Name,PoolName )
@@ -38,12 +39,12 @@ def LvmBackup(Name, Size, Pool):
     os.system(cmdCreateLVM)  # create LVM snapeshot 
     os.system(cmdDD)          # start dd
     os.system(cmdRmLVM)  # remove LVM snapeshot
-    ftpput(FileImg)               # put file 
+    ftpput(FileImg, NameImgFtp)               # put file 
     #print "#########",date,"##############"
 
 
 
-def MysqlConn():
+def Start():
     MysqlGet()
     import mysql.connector
     from mysql.connector import errorcode
@@ -66,7 +67,7 @@ def MysqlConn():
             LvmBackup(R[0],R[1], R[2])
         cnx.close()
 
-def conftpput(nameb,user,url,password, file ):
+def conftpput(nameb,user,url,password, file, NameImg):
     from ftplib import FTP
     ftp = FTP(url)
     ftp.login(user, password)
@@ -77,10 +78,11 @@ def conftpput(nameb,user,url,password, file ):
         print 'NO Dir, Start create'
         ftp.mkd(nameb)
     ftp.cwd(nameb)
-    ftp.storbinary('STOR '+file, open(file, 'rb'))
+    filecopy=open(file,'r')
+    ftp.storbinary("STOR %s"%(NameImg), filecopy)
     ftp.quit() 
 
-def ftpput(file):
+def ftpput(file,NameImgFtp):
     print "Start put file to backup server"+file
     import xmltodict
     with open('/usr/local/mgr5/etc/.vmmgr-backup/storages/st_1') as fd:
@@ -89,7 +91,7 @@ def ftpput(file):
         passftp=doc['doc']['settings']['password']
         urlftp=doc['doc']['settings']['url']
         userftp=doc['doc']['settings']['username']
-    conftpput(nameb,userftp,urlftp,passftp, file)
+    conftpput(nameb,userftp,urlftp,passftp,file,NameImgFtp )
     
  # Need create LVM to file with date
  # Need clean file and clean ftp store 
@@ -101,7 +103,7 @@ def Main():
     #import time
     #time.sleep(10)
     #MysqlGet()
-    MysqlConn()
+    Start()
     #print VarMysql['DBHost']
     #os.remove(pidfile)
     #ftpget()
