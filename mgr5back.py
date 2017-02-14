@@ -5,7 +5,7 @@ import os
 
 ftp_conn='/usr/local/mgr5/etc/.vmmgr-backup/storages/st_1'
 pidfile = '/tmp/vdsback.pid'
-#BackDir='/tmp'
+BackDir='/backup'
 #FileDB="/usr/local/mgr5/etc/vmmgr.conf.d/db.conf"
 FileDB='/home/ruslan/db.conf'
 pid = str(os.getpid())
@@ -87,13 +87,12 @@ def ftpput(file, NameImg):
         print 'NO Dir, Start create'
         ftp.mkd(nameb)
     ftp.cwd(nameb)
-    pipe="/tmp/%s"%(NameImg)
-    mkpipe="mkfifo %s"%(pipe)
-    os.system(mkpipe)
-    cmdDD="dd if=%s-snapshot | gzip -c > %s &"%(file, pipe)
+    filez=BackDir+"/"+NameImg
+    cmdDD="dd if=%s-snapshot | gzip -c > %s &"%(file, filez)
     os.system(cmdDD) 
-    ftp.storbinary("STOR %s"%(NameImg), open(pipe))
-    rmpipe="rm %s"%(pipe)
+    ftp.storbinary("STOR %s"%(NameImg), open(filez))
+    rmf="rm %s"%(filez)
+    os.system(rmf)
     ftp.quit() 
 
     
