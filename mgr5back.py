@@ -8,6 +8,9 @@ pidfile = '/tmp/vdsback.pid'
 BackDir='/backup'
 #FileDB="/usr/local/mgr5/etc/vmmgr.conf.d/db.conf"
 FileDB='/home/ruslan/db.conf'
+# You can use script with gzip and without zipping, 
+Gzip="YES"   # YES or NO 
+
 pid = str(os.getpid())
 
 
@@ -37,13 +40,18 @@ def LvmBackup(Name, Size, Pool):
     print "Start creating LVM Snapshote "+Name
     cmdCreateLVM="lvcreate -L%sG -s -n %s-snapshot %s"%(Size,Name,PoolName )
     cmdRmLVM="lvremove -f %s"%(PoolName)
-    cmdDD="dd if=%s-snapshot | gzip -c > %s "%(PoolName, filez)
-    rmf="rm %s"%(filez)
+    if Gzip is "YES":
+        cmdDD="dd if=%s-snapshot | gzip -c > %s "%(PoolName, filez)
+        os.system(cmdDD) 
+    else:
+        filez=PoolName
     os.system(cmdCreateLVM)  # create LVM snapeshot 
     os.system(cmdDD)             # start dd 
-    ftpput(filez,NameImgFtp)   # put to ftp 
+    ftpput(filez,NameImgFtp)   # put to ftp
     os.system(cmdRmLVM)  # remove LVM snapeshot
-    os.system(rmf)               # remove gzip file 
+    if Gzip is not "YES":
+        rmf="rm %s"%(filez)
+        os.system(rmf)              # remove gzip file 
     #print "#########",date,"##############"
 
 
