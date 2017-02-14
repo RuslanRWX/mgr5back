@@ -3,9 +3,11 @@
 import sys
 import os
 
-ftp_con='/usr/local/mgr5/etc/.vmmgr-backup/storages/st_1'
+ftp_conn='/usr/local/mgr5/etc/.vmmgr-backup/storages/st_1'
 pidfile = '/tmp/vdsback.pid'
 #BackDir='/tmp'
+#FileDB="/usr/local/mgr5/etc/vmmgr.conf.d/db.conf"
+FileDB='/home/ruslan/db.conf'
 pid = str(os.getpid())
 
 
@@ -20,8 +22,6 @@ def Check():
 def MysqlGet():
     global VarMysql
     VarMysql={}
-    #FileDB="/usr/local/mgr5/etc/vmmgr.conf.d/db.conf"
-    FileDB='/home/ruslan/db.conf'
     St=['DBHost','DBUser','DBPassword','DBName']
     for line in open(FileDB,'r').readlines():
         parts = line.split() # split line into parts
@@ -68,7 +68,7 @@ def Start():
         cnx.close()
 
 
-def ftpput(File, NameImg):
+def ftpput(file, NameImg):
     print "Start put file to backup server"+file
     import xmltodict
     with open(ftp_conn) as fd:
@@ -111,6 +111,7 @@ def Main():
     #print VarMysql['DBHost']
     #os.remove(pidfile)
     #ftpget()
-Main()
 
+if __name__ == '__main__':
+    Main()
 
