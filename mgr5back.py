@@ -3,9 +3,12 @@
 import sys
 import os
 
-pid = str(os.getpid())
+ftp_con='/usr/local/mgr5/etc/.vmmgr-backup/storages/st_1'
 pidfile = '/tmp/vdsback.pid'
-BackDir='/tmp'
+#BackDir='/tmp'
+pid = str(os.getpid())
+
+
 
 def Check():
     if os.path.isfile(pidfile):
@@ -29,17 +32,14 @@ def LvmBackup(Name, Size, Pool):
     import datetime
     date=datetime.datetime.now().strftime("%Y%m%d%H%M%S")
     PoolName='/dev/'+Pool+"/"+Name
-    FileImg=BackDir+"/"+Name+"_"+date
     NameImgFtp=Name+"_"+date
     print "Start creating LVM Snapshote "+Name
     #print FileBack
     cmdCreateLVM="lvcreate -L%sG -s -n %s-snapshot %s"%(Size,Name,PoolName )
     cmdRmLVM="lvremove -f %s"%(PoolName)
-    cmdDD="dd if=%s-snapshot | gzip -c > %s"%(PoolName, FileImg)
     os.system(cmdCreateLVM)  # create LVM snapeshot 
-    os.system(cmdDD)          # start dd
+    ftpput(PoolName, NameImgFtp)   # put to ftp 
     os.system(cmdRmLVM)  # remove LVM snapeshot
-    ftpput(FileImg, NameImgFtp)               # put file 
     #print "#########",date,"##############"
 
 
@@ -67,10 +67,19 @@ def Start():
             LvmBackup(R[0],R[1], R[2])
         cnx.close()
 
-def conftpput(nameb,user,url,password, file, NameImg):
+
+def ftpput(File, NameImg):
+    print "Start put file to backup server"+file
+    import xmltodict
+    with open(ftp_conn) as fd:
+        doc = xmltodict.parse(fd.read())
+        nameb=doc['doc']['name']
+        passftp=doc['doc']['settings']['password']
+        url=doc['doc']['settings']['url']
+        user=doc['doc']['settings']['username']
     from ftplib import FTP
     ftp = FTP(url)
-    ftp.login(user, password)
+    ftp.login(user, passftp)
     #print ftp.mkd(nameb)
     if nameb in ftp.nlst('') :
         pass
@@ -78,20 +87,15 @@ def conftpput(nameb,user,url,password, file, NameImg):
         print 'NO Dir, Start create'
         ftp.mkd(nameb)
     ftp.cwd(nameb)
-    filecopy=open(file,'r')
-    ftp.storbinary("STOR %s"%(NameImg), filecopy)
+    pipe="/tmp/%s"%(NameImg)
+    mkpipe="mkfifo %s"%(pipe)
+    os.system(mkpipe)
+    cmdDD="dd if=%s-snapshot | gzip -c > %s &"%(file, pipe)
+    os.system(cmdDD) 
+    ftp.storbinary("STOR %s"%(NameImg), open(pipe))
+    rmpipe="rm %s"%(pipe)
     ftp.quit() 
 
-def ftpput(file,NameImgFtp):
-    print "Start put file to backup server"+file
-    import xmltodict
-    with open('/usr/local/mgr5/etc/.vmmgr-backup/storages/st_1') as fd:
-        doc = xmltodict.parse(fd.read())
-        nameb=doc['doc']['name']
-        passftp=doc['doc']['settings']['password']
-        urlftp=doc['doc']['settings']['url']
-        userftp=doc['doc']['settings']['username']
-    conftpput(nameb,userftp,urlftp,passftp,file,NameImgFtp )
     
  # Need create LVM to file with date
  # Need clean file and clean ftp store 
