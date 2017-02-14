@@ -28,18 +28,22 @@ def MysqlGet():
         if len(parts) > 1: 
             VarMysql[parts[0]] = parts[1]
 
-def LvmBackup(Name, Size, Pool):
+def LvmBackup(Name, Size, Pool): 
     import datetime
     date=datetime.datetime.now().strftime("%Y%m%d%H%M%S")
     PoolName='/dev/'+Pool+"/"+Name
+    filez=BackDir+"/"+Name+"_"+date
     NameImgFtp=Name+"_"+date
     print "Start creating LVM Snapshote "+Name
-    #print FileBack
     cmdCreateLVM="lvcreate -L%sG -s -n %s-snapshot %s"%(Size,Name,PoolName )
     cmdRmLVM="lvremove -f %s"%(PoolName)
+    cmdDD="dd if=%s-snapshot | gzip -c > %s "%(PoolName, filez)
+    rmf="rm %s"%(filez)
     os.system(cmdCreateLVM)  # create LVM snapeshot 
-    ftpput(PoolName, NameImgFtp)   # put to ftp 
+    os.system(cmdDD)             # start dd 
+    ftpput(filez,NameImgFtp)   # put to ftp 
     os.system(cmdRmLVM)  # remove LVM snapeshot
+    os.system(rmf)               # remove gzip file 
     #print "#########",date,"##############"
 
 
@@ -87,12 +91,7 @@ def ftpput(file, NameImg):
         print 'NO Dir, Start create'
         ftp.mkd(nameb)
     ftp.cwd(nameb)
-    filez=BackDir+"/"+NameImg
-    cmdDD="dd if=%s-snapshot | gzip -c > %s &"%(file, filez)
-    os.system(cmdDD) 
-    ftp.storbinary("STOR %s"%(NameImg), open(filez))
-    rmf="rm %s"%(filez)
-    os.system(rmf)
+    ftp.storbinary("STOR %s"%(NameImg), open(file))
     ftp.quit() 
 
     
