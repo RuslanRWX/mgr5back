@@ -40,12 +40,12 @@ def LvmBackup(Name, Size, Pool):
     print "Start creating LVM Snapshote "+Name
     cmdCreateLVM="lvcreate -L%sG -s -n %s-snapshot %s"%(Size,Name,PoolName )
     cmdRmLVM="lvremove -f %s"%(PoolName)
+    os.system(cmdCreateLVM)  # create LVM snapeshot 
     if Gzip is "YES":
         cmdDD="dd if=%s-snapshot | gzip -c > %s "%(PoolName, filez)
         os.system(cmdDD) 
     else:
         filez=PoolName
-    os.system(cmdCreateLVM)  # create LVM snapeshot 
     os.system(cmdDD)             # start dd 
     ftpput(filez,NameImgFtp)   # put to ftp
     os.system(cmdRmLVM)  # remove LVM snapeshot
