@@ -38,7 +38,7 @@ def LvmBackup(Name, Size, Pool):
     filez=BackDir+"/"+Name+"_"+date
     NameImgFtp=Name+"_"+date
     print "Start creating LVM Snapshote "+Name
-    cmdCreateLVM="lvcreate -L%sG -s -n %s-snapshot %s"%(Size,Name,PoolName )
+    cmdCreateLVM="lvcreate -L%sM -s -n %s-snapshot %s"%(Size,Name,PoolName )
     cmdRmLVM="kpartx -d %s; lvremove -f %s"%(PoolName, PoolName)
     os.system(cmdCreateLVM)  # create LVM snapeshot 
     if Gzip is "YES":
