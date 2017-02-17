@@ -61,38 +61,39 @@ def Search():
        StartBackup(R[0])
 
 def StartBackup(ServerID):
+    import datetime
+    date=datetime.datetime.now().strftime("%Y%m%d%H%M%S")
     #print ServerID
     sql="select vm,name,pool,size from volume where vm=\'%s\' and hostnode=\'%s\' and pool is not NULL;"%(ServerID,NodeID)
     Serv=Mysqlget(sql)
     #print Serv
     for R in Serv:
-        W=work(R[1], R[2])
+        W=work(R[1], R[2], date)
         W.CreateLVM(R[3])
     for R in Serv:
-        W=work(R[1], R[2])
+        W=work(R[1], R[2], date)
         W.CreateGzip()
         W.PutFtp()
 
 
 class work:
-    def __init__(self, Name, Pool):
-        import datetime
-        self.date=datetime.datetime.now().strftime("%Y%m%d%H%M%S")
+    def __init__(self, Name, Pool, date):
+        self.date=date
         self.Name=Name
         self.Pool=Pool
         PoolName='/dev/'+Pool+"/"+Name
-        self.filez=BackDir+"/"+Name+"_"+self.date
-        NameImgFtp=Name+"_"+self.date
-        self.dftp=self.Name+"/"+self.date
+        self.filez=BackDir+"/"+Name+"_"+date
+        NameImgFtp=Name+"_"+date
+        self.dftp=self.Name+"/"+date
         #print PoolName
     def CreateLVM(self, Size):
      #   print "Name: ", self.Name," Size:  ", Size," Pool: "+ self.Pool
-        print "Start creating LVM Snapshote "+Name
-        cmdCreateLVM="lvcreate -L%sM -s -n %s-snapshot %s"%(Size,Name,PoolName )
+        print "Start creating LVM Snapshote "+self.Name
+        cmdCreateLVM="lvcreate -L%sM -s -n %s-snapshot %s"%(Size,self.Name,self.PoolName)
         os.system(cmdCreateLVM)
     def CreateGzip(self):
         print "Create gzip file, pool: "+self.Pool+" backup file: "+self.filez
-        cmdDD="dd if=%s-snapshot | gzip -c > %s "%(PoolName, filez)
+        cmdDD="dd if=%s-snapshot | gzip -c > %s "%(PoolName, self.filez)
         os.system(cmdDD)  # start dd
     def PutFtp(self):
         print "Upload a file via FTP :"+self.filez
@@ -127,14 +128,14 @@ class work:
             ftp.mkd(self.date)
         ftp.cwd(DIR)
         print "Upload to "+DIR
-        ftp.storbinary("STOR %s"%(self.NameImgFtp), open(self.filez))
+        #ftp.storbinary("STOR %s"%(self.NameImgFtp), open(self.filez))
         ftp.quit()
        
       
       
 def Main(): 
     if len(sys.argv) > 1:
-         Startbackup(sys.argv[1])
+         StartBackup(sys.argv[1])
     else:
         Search()
     #sql="select name,pool,size from volume where hostnode=\'%s\' and vm not in (%s) and pool is not NULL;"%(NodeID, NoBackupID)
