@@ -72,7 +72,8 @@ def StartBackup(ServerID):
         W.CreateLVM(R[3])
     for R in Serv:
         W=work(R[1], R[2], date)
-        W.CreateGzip()
+        if Gzip is "YES":
+            W.CreateGzip()
         W.PutFtp()
 
 
@@ -81,9 +82,9 @@ class work:
         self.date=date
         self.Name=Name
         self.Pool=Pool
-        PoolName='/dev/'+Pool+"/"+Name
+        self.PoolName='/dev/'+Pool+"/"+Name
         self.filez=BackDir+"/"+Name+"_"+date
-        NameImgFtp=Name+"_"+date
+        self.NameImgFtp=Name+"_"+date
         self.dftp=self.Name+"/"+date
         #print PoolName
     def CreateLVM(self, Size):
@@ -93,7 +94,7 @@ class work:
         os.system(cmdCreateLVM)
     def CreateGzip(self):
         print "Create gzip file, pool: "+self.Pool+" backup file: "+self.filez
-        cmdDD="dd if=%s-snapshot | gzip -c > %s "%(PoolName, self.filez)
+        cmdDD="dd if=%s-snapshot | gzip -c > %s "%(self.PoolName, self.filez)
         os.system(cmdDD)  # start dd
     def PutFtp(self):
         print "Upload a file via FTP :"+self.filez
@@ -128,7 +129,7 @@ class work:
             ftp.mkd(self.date)
         ftp.cwd(DIR)
         print "Upload to "+DIR
-        #ftp.storbinary("STOR %s"%(self.NameImgFtp), open(self.filez))
+        ftp.storbinary("STOR %s"%(self.NameImgFtp), open(self.filez))
         ftp.quit()
        
       
