@@ -68,10 +68,10 @@ def StartBackup(ServerID):
     Serv=Mysqlget(sql)
     #print Serv
     for R in Serv:
-        W=work(R[1], R[2], date)
+        W=work(R[0], R[1], R[2], date)
         W.CreateLVM(R[3])
     for R in Serv:
-        W=work(R[1], R[2], date)
+        W=work(R[0], R[1], R[2], date)
         if Gzip is "YES":
             W.CreateGzip()
         W.PutFtp()
@@ -81,7 +81,8 @@ def StartBackup(ServerID):
 
 
 class work:
-    def __init__(self, Name, Pool, date):
+    def __init__(self, ID,  Name, Pool, date):
+        self.ID=ID
         self.date=date
         self.Name=Name
         self.Pool=Pool
@@ -116,7 +117,7 @@ class work:
         DIR=NodeID+"/"+self.Name+"/"+self.date
         w=workftp()
         w.Path(NodeID)
-        w.Path(self.Name)
+        w.Path(self.ID)
         w.Path(self.date)
         print "Upload to "+DIR
         w.Put(self.NameImgFtp, self.filez)
