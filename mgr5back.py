@@ -102,12 +102,12 @@ class work:
         cmdCreateLVM="lvcreate -L%sM -s -n %s-snapshot %s"%(Size,self.Name,self.PoolName)
         os.system(cmdCreateLVM)
     def RemoveLVM(self):
-        print "Remove LVM Snapshote "+self.Name
-        cmd="lvremove -f %s-snapshot"%(self.Name)
+        print "Remove LVM Snapshote "+self.PoolName
+        cmd="lvremove -f %s-snapshot"%(self.PoolName)
         os.system(cmd)
     def RmFile(self):
-        print "Remove file:"+self.PoolName
-        cmd="rm %s"%(self.PoolName)
+        print "Remove file:"+self.filez
+        cmd="rm %s"%(self.filez)
         os.system(cmd)
     def CreateGzip(self):
         print "Create gzip file, pool: "+self.Pool+" backup file: "+self.filez
