@@ -114,7 +114,7 @@ class work:
         cmdDD="dd if=%s-snapshot | gzip -c > %s "%(self.PoolName, self.filez)
         os.system(cmdDD)  # start dd
     def PutFtp(self):
-        print self.Name
+        #print self.Name
         DIR=NodeID+"/"+self.id+"/"+self.date
         w=workftp()
         w.Path(NodeID)
