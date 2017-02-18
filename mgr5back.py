@@ -75,6 +75,7 @@ def StartBackup(ServerID):
         if Gzip is "YES":
             W.CreateGzip()
         W.PutFtp()
+        W.RemoveLVM()
 
 
 class work:
@@ -96,19 +97,23 @@ class work:
         print "Start creating LVM Snapshote "+self.Name
         cmdCreateLVM="lvcreate -L%sM -s -n %s-snapshot %s"%(Size,self.Name,self.PoolName)
         os.system(cmdCreateLVM)
+    def RemoveLVM(self):
+        print "Remove LVM Snapshote "+self.Name
+        cmd="lvremove -f %s-snapshot"%(self.Name)
+        os.system(cmd)
     def CreateGzip(self):
         print "Create gzip file, pool: "+self.Pool+" backup file: "+self.filez
         cmdDD="dd if=%s-snapshot | gzip -c > %s "%(self.PoolName, self.filez)
         os.system(cmdDD)  # start dd
     def PutFtp(self):
         print self.Name
-        DIR=NodeID+"/"+nameb+"/"+self.Name+"/"+self.date
-        w=workftp
+        DIR=NodeID+"/"+self.Name+"/"+self.date
+        w=workftp()
         w.Path(NodeID)
         w.Path(self.Name)
         w.Path(self.date)
         print "Upload to "+DIR
-        w.put(self.NameImgFtp, self.filez)
+        w.Put(self.NameImgFtp, self.filez)
 
     
 class workftp():
