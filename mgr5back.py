@@ -6,14 +6,14 @@ import xmltodict
 import time
 
 NodeID='2'
-NoBackupID='151'
+NoBackupID='51'
 ftp_conn='/usr/local/mgr5/etc/.vmmgr-backup/storages/st_1'
 pidfile = '/tmp/vdsback.pid'
 BackDir='/backup'
 #FileDB="/usr/local/mgr5/etc/vmmgr.conf.d/db.conf"
 FileDB='/home/ruslan/db.conf'
 # You can use script with gzip and without zipping, 
-Gzip="YES"   # YES or NO 
+Gzip="NO"   # YES or NO 
 
 pid = str(os.getpid())
 
@@ -100,38 +100,42 @@ class work:
         print "Create gzip file, pool: "+self.Pool+" backup file: "+self.filez
         cmdDD="dd if=%s-snapshot | gzip -c > %s "%(self.PoolName, self.filez)
         os.system(cmdDD)  # start dd
-    def FtpPath(self, path):
-         try:
-            ftp.cwd(path)
-         except ftplib.error_perm:
-            ftp.mkd(path)
-            ftp.cwd(path)
-        
     def PutFtp(self):
-        print "Upload a file via FTP :"+self.filez
+        print self.Name
+        DIR=NodeID+"/"+nameb+"/"+self.Name+"/"+self.date
+        #print ftp.mkd(nameb)
+        workftp.Path(NodeID)
+        workftp.Path(named)
+        workftp.Path(self.Name)
+        workftp.Path(self.date)
+        print "Upload to "+DIR
+        workftp.put(self.NameImgFtp, self.filez)
+
+    
+class workftp():
+    def __init__(self):
+        import ftplib
+        from ftplib import FTP
+        print "Connect to FTP server"
         with open(ftp_conn) as fd:
             doc = xmltodict.parse(fd.read())
             nameb=doc['doc']['name']
             passftp=doc['doc']['settings']['password']
             url=doc['doc']['settings']['url']
             user=doc['doc']['settings']['username']
-        import ftplib
-        from ftplib import FTP
-        print self.Name
-        DIR=NodeID+"/"+nameb+"/"+self.Name+"/"+self.date
-        ftp = FTP(url)
-        ftp.login(user, passftp)
-        #print ftp.mkd(nameb)
-        FtpPath(NodeID)
-        FtpPath(named)
-        ftpPath(self.Name)
-        ftpPath(self.date)
-        print "Upload to "+DIR
-        ftp.storbinary("STOR %s"%(self.NameImgFtp), open(self.filez))
-        ftp.quit()
-       
-      
-      
+        self.ftp = FTP(url)
+        self.ftp.login(user, passftp)
+    def Path(self, path):
+        try:
+            self.ftp.cwd(path)
+        except ftplib.error_perm:
+            self.ftp.mkd(path)
+            self.ftp.cwd(path)
+    def Put(self,  NameFile, File):
+        self.ftp.storbinary("STOR %s"%(self.NameFile), open(File))
+    self.ftp.quit()
+        
+
 def Main(): 
     if len(sys.argv) > 1:
          StartBackup(sys.argv[1])
