@@ -103,13 +103,12 @@ class work:
     def PutFtp(self):
         print self.Name
         DIR=NodeID+"/"+nameb+"/"+self.Name+"/"+self.date
-        #print ftp.mkd(nameb)
-        workftp.Path(NodeID)
-        workftp.Path(named)
-        workftp.Path(self.Name)
-        workftp.Path(self.date)
+        w=workftp
+        w.Path(NodeID)
+        w.Path(self.Name)
+        w.Path(self.date)
         print "Upload to "+DIR
-        workftp.put(self.NameImgFtp, self.filez)
+        w.put(self.NameImgFtp, self.filez)
 
     
 class workftp():
@@ -120,19 +119,21 @@ class workftp():
         with open(ftp_conn) as fd:
             doc = xmltodict.parse(fd.read())
             nameb=doc['doc']['name']
-            passftp=doc['doc']['settings']['password']
-            url=doc['doc']['settings']['url']
-            user=doc['doc']['settings']['username']
-        self.ftp = FTP(url)
-        self.ftp.login(user, passftp)
+            self.passftp=doc['doc']['settings']['password']
+            self.url=doc['doc']['settings']['url']
+            self.user=doc['doc']['settings']['username']
+        self.ftp = FTP(self.url)
+        self.ftp.login(self.user, self.passftp)
     def Path(self, path):
+        import ftplib
+        from ftplib import FTP
         try:
             self.ftp.cwd(path)
         except ftplib.error_perm:
             self.ftp.mkd(path)
             self.ftp.cwd(path)
     def Put(self,  NameFile, File):
-        self.ftp.storbinary("STOR %s"%(self.NameFile), open(File))
+        self.ftp.storbinary("STOR %s"%(NameFile), open(File))
     self.ftp.quit()
         
 
