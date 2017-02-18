@@ -76,6 +76,8 @@ def StartBackup(ServerID):
             W.CreateGzip()
         W.PutFtp()
         W.RemoveLVM()
+        if Gzip is "YES":
+            w.RmFile()
 
 
 class work:
@@ -100,6 +102,10 @@ class work:
     def RemoveLVM(self):
         print "Remove LVM Snapshote "+self.Name
         cmd="lvremove -f %s-snapshot"%(self.Name)
+        os.system(cmd)
+    def RmFile(self):
+        print "Remove file:"+self.PoolName
+        cmd="rm %s"%(self.PoolName)
         os.system(cmd)
     def CreateGzip(self):
         print "Create gzip file, pool: "+self.Pool+" backup file: "+self.filez
@@ -139,7 +145,7 @@ class workftp():
             self.ftp.cwd(path)
     def Put(self,  NameFile, File):
         self.ftp.storbinary("STOR %s"%(NameFile), open(File))
-    self.ftp.quit()
+        self.ftp.quit()
         
 
 def Main(): 
