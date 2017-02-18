@@ -89,7 +89,7 @@ class work:
         if Gzip is "YES":
             self.filez=BackDir+"/"+Name+"_"+date
         else:
-            self.filez=PoolName
+            self.filez=self.PoolName
         #print PoolName
     def CreateLVM(self, Size):
      #   print "Name: ", self.Name," Size:  ", Size," Pool: "+ self.Pool
@@ -100,6 +100,13 @@ class work:
         print "Create gzip file, pool: "+self.Pool+" backup file: "+self.filez
         cmdDD="dd if=%s-snapshot | gzip -c > %s "%(self.PoolName, self.filez)
         os.system(cmdDD)  # start dd
+    def FtpPath(self, path):
+         try:
+            ftp.cwd(path)
+         except ftplib.error_perm:
+            ftp.mkd(path)
+            ftp.cwd(path)
+        
     def PutFtp(self):
         print "Upload a file via FTP :"+self.filez
         with open(ftp_conn) as fd:
@@ -115,23 +122,10 @@ class work:
         ftp = FTP(url)
         ftp.login(user, passftp)
         #print ftp.mkd(nameb)
-        try:
-            ftp.cwd(NodeID)
-        except ftplib.error_perm:
-            ftp.mkd(NodeID)
-        try:
-            ftp.cwd(nameb)
-        except ftplib.error_perm:
-            ftp.mkd(nameb)
-        try:
-            ftp.cwd(self.Name)
-        except:
-            ftp.mkd(self.Name)
-        try:
-            ftp.cwd(self.date)
-        except ftplib.error_perm:
-            ftp.mkd(self.date)
-        ftp.cwd(DIR)
+        FtpPath(NodeID)
+        FtpPath(named)
+        ftpPath(self.Name)
+        ftpPath(self.date)
         print "Upload to "+DIR
         ftp.storbinary("STOR %s"%(self.NameImgFtp), open(self.filez))
         ftp.quit()
