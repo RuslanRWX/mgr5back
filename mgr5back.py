@@ -86,6 +86,10 @@ class work:
         self.filez=BackDir+"/"+Name+"_"+date
         self.NameImgFtp=Name+"_"+date
         self.dftp=self.Name+"/"+date
+        if Gzip is "YES":
+            self.filez=BackDir+"/"+Name+"_"+date
+        else:
+            self.filez=PoolName
         #print PoolName
     def CreateLVM(self, Size):
      #   print "Name: ", self.Name," Size:  ", Size," Pool: "+ self.Pool
