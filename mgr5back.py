@@ -78,7 +78,7 @@ def StartBackup(ServerID):
         W.PutFtp()
         W.RemoveLVM()
         if Gzip is "YES":
-            w.RmFile()
+            W.RmFile()
 
 
 class work:
