@@ -13,7 +13,7 @@ BackDir='/backup'
 #FileDB="/usr/local/mgr5/etc/vmmgr.conf.d/db.conf"
 FileDB='/home/ruslan/db.conf'
 # You can use script with gzip and without zipping, 
-Gzip="NO"   # YES or NO 
+Gzip="YES"   # YES or NO 
 
 pid = str(os.getpid())
 
@@ -38,7 +38,7 @@ def Mysqlget(SQL):
     from mysql.connector import errorcode
     try:
         cnx = mysql.connector.connect(user=VarMysql['DBUser'], password=VarMysql['DBPassword'],
-                                 host=VarMysql['DBHost'],
+                                host=VarMysql['DBHost'],
                                 database=VarMysql['DBName'])
     except mysql.connector.Error as err:
         if err.errno == errorcode.ER_ACCESS_DENIED_ERROR:
@@ -99,8 +99,8 @@ class work:
     def CreateLVM(self, Size):
      #   print "Name: ", self.Name," Size:  ", Size," Pool: "+ self.Pool
         print "Start creating LVM Snapshote "+self.Name
-        cmdCreateLVM="lvcreate -L%sM -s -n %s-snapshot %s"%(Size,self.Name,self.PoolName)
-        os.system(cmdCreateLVM)
+        cmd="lvcreate -L%sM -s -n %s-snapshot %s"%(Size,self.Name,self.PoolName)
+        os.system(cmd)
     def RemoveLVM(self):
         print "Remove LVM Snapshote "+self.PoolName
         cmd="lvremove -f %s-snapshot"%(self.PoolName)
