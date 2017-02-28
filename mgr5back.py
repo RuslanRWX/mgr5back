@@ -12,20 +12,18 @@ NodeID='2'
 NoBackupID='51'
 # 
 ftp_conn='/usr/local/mgr5/etc/.vmmgr-backup/storages/st_1'
-# id 
+# Pidfile
 pidfile = '/tmp/vdsback.pid'
 BackDir='/backup'
 #FileDB="/usr/local/mgr5/etc/vmmgr.conf.d/db.conf"
 FileDB='/home/ruslan/db.conf'
 # You can use script with gzip and without zipping, 
 Gzip="YES"   # YES or NO 
-
 SaveDate=9
 
+
+
 pid = str(os.getpid())
-
-
-
 def Check():
     if os.path.isfile(pidfile):
         print "%s already exists, exiting" % pidfile
@@ -187,9 +185,9 @@ def Main():
     if len(sys.argv) > 1:
          StartBackup(sys.argv[1])
     else:
-        #Check()
-       # Search()
-       Clean("151") 
+        Check()
+        Search()
+       #Clean("151") 
     #sql="select name,pool,size from volume where hostnode=\'%s\' and vm not in (%s) and pool is not NULL;"%(NodeID, NoBackupID)
     #res=Mysqlget(sql)
     #print res
