@@ -5,15 +5,22 @@ import os
 import xmltodict
 import time
 
+# ID vmmanager of  your node
 NodeID='2'
+#exclude a virtual machines with should not be backup. 
+# example NoBackupID='51,12' - ids are separeted by commas.
 NoBackupID='51'
+# 
 ftp_conn='/usr/local/mgr5/etc/.vmmgr-backup/storages/st_1'
+# id 
 pidfile = '/tmp/vdsback.pid'
 BackDir='/backup'
 #FileDB="/usr/local/mgr5/etc/vmmgr.conf.d/db.conf"
 FileDB='/home/ruslan/db.conf'
 # You can use script with gzip and without zipping, 
 Gzip="YES"   # YES or NO 
+
+SaveDate=9
 
 pid = str(os.getpid())
 
@@ -79,7 +86,7 @@ def StartBackup(ServerID):
         W.RemoveLVM()
         if Gzip is "YES":
             W.RmFile()
-
+        Clean(R[0])
 
 class work:
     def __init__(self, id,  Name, Pool, date):
@@ -148,13 +155,41 @@ class workftp():
     def Put(self,  NameFile, File):
         self.ftp.storbinary("STOR %s"%(NameFile), open(File))
         self.ftp.quit()
-        
+    def List(self): 
+        files = self.ftp.nlst()
+        return files
 
+    
+def Clean(id):
+    print "Start clean ftp server, older then:", SaveDate,"days"
+    w=workftp()
+    path=NodeID+"/%s/"%(id)
+    w.ftp.cwd(path)
+    ListDirs=w.List() 
+    import datetime
+    date=datetime.datetime.now() - datetime.timedelta(days=SaveDate)
+    date2 = date.strftime("%Y%m%d000000")
+    print "Check date: "+date2
+    for R in ListDirs:
+        if date2 > R:
+            w.ftp.cwd(R)
+            ListFile=w.List()
+            for F in ListFile:
+                print "Delete file:"+F
+                w.ftp.delete(F)
+            print "Detele Dir: "+R
+            w.ftp.cwd("~/"+path)
+            w.ftp.rmd(R)    # Delete old dir
+    w.ftp.quit()
+
+    
 def Main(): 
     if len(sys.argv) > 1:
          StartBackup(sys.argv[1])
     else:
-        Search()
+        #Check()
+       # Search()
+       Clean("151") 
     #sql="select name,pool,size from volume where hostnode=\'%s\' and vm not in (%s) and pool is not NULL;"%(NodeID, NoBackupID)
     #res=Mysqlget(sql)
     #print res
