@@ -71,9 +71,13 @@ def StartBackup(ServerID):
     #print ServerID
     sql="select vm,name,pool,size from volume where vm=\'%s\' and hostnode=\'%s\' and pool is not NULL;"%(ServerID,NodeID)
     Serv=Mysqlget(sql)
-    #print Serv
     for R in Serv:
-        #print R[0]
+        print "Start backu: "+R[1]
+        print "Start sync"
+        cmd="virsh send-key %s KEY_LEFTALT KEY_SYSRQ KEY_S"%(R[1])
+        import time
+        time.sleep(3)
+        os.system(cmd)
         W=work(R[0], R[1], R[2], date)
         W.CreateLVM(R[3])
     for R in Serv:
@@ -100,11 +104,6 @@ class work:
             self.filez=BackDir+"/"+Name+"_"+date
         else:
             self.filez=self.PoolName
-        print "Start sync"
-        cmd="virsh send-key %s KEY_LEFTALT KEY_SYSRQ KEY_S"%(self.Name)
-        import time
-        time.sleep(3)
-        os.system(cmd)
     def CreateLVM(self, Size):
      #   print "Name: ", self.Name," Size:  ", Size," Pool: "+ self.Pool
         print "Start creating LVM Snapshote "+self.Name
