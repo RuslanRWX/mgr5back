@@ -104,8 +104,12 @@ class work:
     def CreateLVM(self, Size):
      #   print "Name: ", self.Name," Size:  ", Size," Pool: "+ self.Pool
         print "Start creating LVM Snapshote "+self.Name
-        cmd="lvcreate -L%sM -s -n %s-snapshot %s"%(Size,self.Name,self.PoolName)
-        os.system(cmd)
+        cmd0="virsh send-key %s KEY_LEFTALT KEY_SYSRQ KEY_S"%(Name)
+        cmd1="lvcreate -L%sM -s -n %s-snapshot %s"%(Size,self.Name,self.PoolName)
+        os.system(cmd0)
+        import time
+        time.sleep(5)
+        os.system(cmd1)
     def RemoveLVM(self):
         print "Remove LVM Snapshote "+self.PoolName
         cmd="lvremove -f %s-snapshot"%(self.PoolName)
