@@ -13,7 +13,7 @@ NoBackupID='51'
 # 
 ftp_conn='/usr/local/mgr5/etc/.vmmgr-backup/storages/st_1'
 # Pidfile
-pidfile = '/tmp/vdsback.pid'
+pidfile = '/tmp/mgr5back.pid'
 BackDir='/backup'
 #FileDB="/usr/local/mgr5/etc/vmmgr.conf.d/db.conf"
 FileDB='/home/ruslan/db.conf'
@@ -187,6 +187,7 @@ def Main():
     else:
         Check()
         Search()
+        os.remove(pidfile)
        #Clean("151") 
     #sql="select name,pool,size from volume where hostnode=\'%s\' and vm not in (%s) and pool is not NULL;"%(NodeID, NoBackupID)
     #res=Mysqlget(sql)
