@@ -71,13 +71,14 @@ def StartBackup(ServerID):
     #print ServerID
     sql="select vm,name,pool,size from volume where vm=\'%s\' and hostnode=\'%s\' and pool is not NULL;"%(ServerID,NodeID)
     Serv=Mysqlget(sql)
+    print "Start backu: "+Serv[0][1]
+    print "Start sync"
+    cmd="virsh send-key %s KEY_LEFTALT KEY_SYSRQ KEY_S"%(Serv[0][1])
+    import time
+    time.sleep(3)
+    os.system(cmd)
     for R in Serv:
-        print "Start backu: "+R[1]
-        print "Start sync"
-        cmd="virsh send-key %s KEY_LEFTALT KEY_SYSRQ KEY_S"%(R[1])
-        import time
-        time.sleep(3)
-        os.system(cmd)
+        print "Start backup storage: "+R[1]
         W=work(R[0], R[1], R[2], date)
         W.CreateLVM(R[3])
     for R in Serv:
