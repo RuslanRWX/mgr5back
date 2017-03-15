@@ -4,24 +4,26 @@ import sys
 import os
 import xmltodict
 import time
-
-# ID vmmanager of  your node
-NodeID='2'
-#exclude a virtual machines with should not be backup. 
-# example NoBackupID='51,12' - ids are separeted by commas.
-NoBackupID='51'
-# 
-ftp_conn='/usr/local/mgr5/etc/.vmmgr-backup/storages/st_1'
-# Pidfile
-pidfile = '/tmp/mgr5back.pid'
-BackDir='/backup'
-#FileDB="/usr/local/mgr5/etc/vmmgr.conf.d/db.conf"
-FileDB='/home/ruslan/db.conf'
-# You can use script with gzip and without zipping, 
-Gzip="YES"   # YES or NO 
-SaveDate=9
+import configparser
 
 
+def Conf():
+    config = configparser.ConfigParser()
+    config.read(os.path.join(os.path.dirname(__file__), 'config.ini'))
+    global NodeID; global NoBackupID;global ftp_conn; global pidfile; global BackDir; global FileDB; global Gzip; global SaveDate
+    NodeID=config['main']['NodeID']
+    NoBackupID=config['main']['NoBackupID']
+    ftp_conn=config['main']['ftp_conn']
+    pidfile=config['main']['pidfile']
+    BackDir=config['main']['BackDir']
+    FileDB=config['main']['FileDB']
+    Gzip=config['main']['Gzip']
+    SaveDate=config['main']['SaveDate']
+    
+
+    
+    
+    
 
 pid = str(os.getpid())
 def Check():
@@ -78,7 +80,7 @@ def StartBackup(ServerID):
     time.sleep(3)
     os.system(cmd)
     for R in Serv:
-        print "Start backup storage: "+R[1]
+        #print "Start backup storage: "+R[1]
         W=work(R[0], R[1], R[2], date)
         W.CreateLVM(R[3])
     for R in Serv:
@@ -199,5 +201,6 @@ def Main():
     
     
 if __name__ == '__main__':
-    Main()
-
+       Conf()
+       Main()
+exit(0) 
