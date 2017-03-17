@@ -23,6 +23,7 @@ def Conf():
     FileDB=config['main']['FileDB']
     Gzip=config['main']['Gzip']
     SaveDate=config['main']['SaveDate']
+    SaveDate=int(SaveDate)
 
 
 pid = str(os.getpid())
