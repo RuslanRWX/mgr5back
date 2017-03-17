@@ -23,11 +23,7 @@ def Conf():
     FileDB=config['main']['FileDB']
     Gzip=config['main']['Gzip']
     SaveDate=config['main']['SaveDate']
-    
 
-    
-    
-    
 
 pid = str(os.getpid())
 def Check():
@@ -77,7 +73,10 @@ def StartBackup(ServerID):
     #print ServerID
     sql="select vm,name,pool,size from volume where vm=\'%s\' and hostnode=\'%s\' and pool is not NULL;"%(ServerID,NodeID)
     Serv=Mysqlget(sql)
-    print "Start backu: "+Serv[0][1]
+    if not Serv:
+        print "Virtual machine does not exist"
+        exit (1)
+    print "Start backup: "+Serv[0][1]
     print "Start sync"
     cmd="virsh send-key %s KEY_LEFTALT KEY_SYSRQ KEY_S"%(Serv[0][1])
     import time
@@ -89,11 +88,11 @@ def StartBackup(ServerID):
         W.CreateLVM(R[3])
     for R in Serv:
         W=work(R[0], R[1], R[2], date)
-        if Gzip is "YES":
+        if (Gzip == 'yes') or 'Yes':
             W.CreateGzip()
         W.PutFtp()
         W.RemoveLVM()
-        if Gzip is "YES":
+        if (Gzip == 'yes') or 'Yes':
             W.RmFile()
         Clean(R[0])
 
@@ -107,7 +106,7 @@ class work:
         self.filez=BackDir+"/"+Name+"_"+date
         self.NameImgFtp=Name+"_"+date
         self.dftp=self.Name+"/"+date
-        if Gzip is "YES":
+        if (Gzip == 'yes') or 'Yes':
             self.filez=BackDir+"/"+Name+"_"+date
         else:
             self.filez=self.PoolName
