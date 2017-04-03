@@ -14,7 +14,7 @@ import datetime
 def Conf():
     config = configparser.ConfigParser()
     config.read(os.path.join(os.path.dirname(__file__), 'config.ini'))
-    global NodeID; global NoBackupID;global ftp_conn; global pidfile; global BackDir; global FileDB; global Gzip; global SaveDate
+    global NodeID; global NoBackupID;global ftp_conn; global pidfile; global BackDir; global FileDB; global Gzip; global SaveDate; global checkdate
     NodeID=config['main']['NodeID']
     NoBackupID=config['main']['NoBackupID']
     ftp_conn=config['main']['ftp_conn']
@@ -24,6 +24,8 @@ def Conf():
     Gzip=config['main']['Gzip']
     SaveDate=config['main']['SaveDate']
     SaveDate=int(SaveDate)
+    checkdate=config['main']['checkdate']
+    checkdate=int(checkdate)
 
 
 pid = str(os.getpid())
@@ -206,7 +208,7 @@ def chftp():
     date0=datetime.datetime.now() - datetime.timedelta(days = checkdate)
     date=date0.strftime("%Y-%m-%d")
     print date
-    sql="select volume.id, volume.name from volume join vm on vm.id=volume.vm where volume.hostnode=\'%s\' and volume.pool is not NULL and volume.vm not in (%s) and knownboottime > \'%s\' ;"%(NodeID,NoBackupID, date)
+    sql="select vm.id, volume.name from volume join vm on vm.id=volume.vm where volume.hostnode=\'%s\' and volume.pool is not NULL and volume.vm not in (%s) and knownboottime < \'%s\' ;"%(NodeID,NoBackupID,date)
     Servs=Mysqlget(sql)
     for R in Servs:
         print R[0]
@@ -233,12 +235,12 @@ def stat():
 
 def help():
     print "Help function: Basic Usage:\n "
-    print "\tstart  - Start full backup"
-    print "\tid     - Start backup only one node, using by id number, example: ./mgr5backup.py id 15" 
-    print "\tlvm    - Start check logical volumes"
-    print "\tlist   - list available virtual machines"
-    print "\tstatus - Status "
-    print  "\thelp  - Print help\n"
+    print "\tstart      - Start full backup"
+    print "\tid         - Start backup only one node, using by id number, example: ./mgr5backup.py id 15" 
+    print "\tlvm        - Start check logical volumes"
+    print "\tlist       - list available virtual machines"
+    print "\tstatus     - Status "
+    print  "\thelp      - Print help\n"
     
 def Main(): 
     try:
