@@ -235,7 +235,7 @@ def stat():
 def help():
     print "Help function: Basic Usage:\n "
     print "\tstart      - Start full backup"
-    print "\tid         - Start backup only one node, using by id number, example: ./mgr5backup.py id 15" 
+    print "\tid         - Start backup only one VM, using by id number, example: ./mgr5backup.py id 15" 
     print "\tlvm        - Start check logical volumes"
     print "\tlist       - display the virtual machine list"
     print "\tstatus     - Status of process"
@@ -245,8 +245,10 @@ def help():
 def Main(): 
     try:
         if sys.argv[1] == 'id':
+            Conf()
             StartBackup(sys.argv[2])
         elif sys.argv[1] == 'start':
+            Conf()
             Check()
             Search()
         elif sys.argv[1] == 'lvm':
@@ -263,6 +265,5 @@ def Main():
         help()
     
 if __name__ == '__main__':
-       Conf()
        Main()
 exit(0) 
