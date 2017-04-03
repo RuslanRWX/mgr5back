@@ -9,7 +9,7 @@ import os
 import xmltodict
 import time
 import configparser
-
+import datetime
 
 def Conf():
     config = configparser.ConfigParser()
@@ -69,7 +69,6 @@ def Search():
        StartBackup(R[0])
 
 def StartBackup(ServerID):
-    import datetime
     date=datetime.datetime.now().strftime("%Y%m%d%H%M%S")
     #print ServerID
     sql="select vm,name,pool,size from volume where vm=\'%s\' and hostnode=\'%s\' and pool is not NULL;"%(ServerID,NodeID)
@@ -191,13 +190,28 @@ def Clean(id):
     w.ftp.quit()
 
 def chlvm():
+    global check_lvm
     print "Start check logical volumes"
     cmd="lvs | grep snapshot"
     Ch=os.system(cmd)
     if Ch:
         print "LVM OK"
+        check_lvm=0
     else:
         print "LVM Error"
+        check_lvm=0
+
+def chftp():
+    checkdate=7
+    date0=datetime.datetime.now() - datetime.timedelta(days = checkdate)
+    date=date0.strftime("%Y-%m-%d")
+    print date
+    sql="select volume.id, volume.name from volume join vm on vm.id=volume.vm where volume.hostnode=\'%s\' and volume.pool is not NULL and volume.vm not in (%s) and knownboottime > \'%s\' ;"%(NodeID,NoBackupID, date)
+    Servs=Mysqlget(sql)
+    for R in Servs:
+        print R[0]
+    
+
 
 def listF():
     print "vm storage #####################################################"
@@ -219,10 +233,11 @@ def stat():
 
 def help():
     print "Help function: Basic Usage:\n "
-    print "\tstart - Start full backup"
-    print "\tid    - Start backup only one node, using by id number, example: ./mgr5backup.py id 15" 
-    print "\tlvm   - Start check logical volumes"
-    print "\tlist  - list available virtual machines"
+    print "\tstart  - Start full backup"
+    print "\tid     - Start backup only one node, using by id number, example: ./mgr5backup.py id 15" 
+    print "\tlvm    - Start check logical volumes"
+    print "\tlist   - list available virtual machines"
+    print "\tstatus - Status "
     print  "\thelp  - Print help\n"
     
 def Main(): 
@@ -238,6 +253,8 @@ def Main():
             listF()
         elif sys.argv[1] == "status":
             stat()
+        elif sys.argv[1] == "chftp":
+            chftp()
         else:
             help()
     except IndexError:
