@@ -191,22 +191,21 @@ def Clean(id):
     w.ftp.quit()
 
 def chlvm():
-    cmd="lvs | grep snapshot || echo 0"
+    print "Start check logical volumes"
+    cmd="lvs | grep snapshot"
     Ch=os.system(cmd)
-    if Ch == "0":
+    if Ch:
         print "LVM OK"
     else:
         print "LVM Error"
-        cmd="lvs | grep snapshot"
-        os.system(cmd)
     
 
 
 def help():
     print "Help function: Basic Usage:\n "
-    print "\t\start - Start full backup"
+    print "\tstart - Start full backup"
     print "\tid - Start backup only one node example: ./mgr5backup.py id 15" 
-    print "\t lvm - Start check logical volumes"
+    print "\tlvm - Start check logical volumes"
     
 def Main(): 
     try:
