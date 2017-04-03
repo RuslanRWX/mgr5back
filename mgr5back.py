@@ -204,8 +204,10 @@ def chlvm():
 def help():
     print "Help function: Basic Usage:\n "
     print "\tstart - Start full backup"
-    print "\tid - Start backup only one node example: ./mgr5backup.py id 15" 
-    print "\tlvm - Start check logical volumes"
+    print "\tid    - Start backup only one node example: ./mgr5backup.py id 15" 
+    print "\tlvm   - Start check logical volumes"
+    
+    print  "\thelp  - Print help\n"
     
 def Main(): 
     try:
