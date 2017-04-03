@@ -1,6 +1,6 @@
 #!/usr/bin/env python
 # Copyright (c) 2017 Ruslan Variushkin,  ruslan@host4.biz
-# Version 0.2
+# Version 0.3.1
 # mgr5back.py is an open-source software to backup virtual machines on the ISP VMmanager version 5 
 # 
 
@@ -190,19 +190,37 @@ def Clean(id):
             w.ftp.rmd(R)    # Delete old dir
     w.ftp.quit()
 
+def chlvm():
+    cmd="lvs | grep snapshot || echo 0"
+    Ch=os.system(cmd)
+    if Ch == "0":
+        print "LVM OK"
+    else:
+        print "LVM Error"
+        cmd="lvs | grep snapshot"
+        os.system(cmd)
+    
+
+
+def help():
+    print "Help function: Basic Usage:\n "
+    print "\t\start - Start full backup"
+    print "\tid - Start backup only one node example: ./mgr5backup.py id 15" 
+    print "\t lvm - Start check logical volumes"
     
 def Main(): 
-    if len(sys.argv) > 1:
-         StartBackup(sys.argv[1])
-    else:
-        Check()
-        Search()
-        os.remove(pidfile)
-       #Clean("151") 
-    #sql="select name,pool,size from volume where hostnode=\'%s\' and vm not in (%s) and pool is not NULL;"%(NodeID, NoBackupID)
-    #res=Mysqlget(sql)
-    #print res
-    
+    try:
+        if sys.argv[1] == 'id':
+            StartBackup(sys.argv[2])
+        elif sys.argv[1] == 'start':
+            Check()
+            Search()
+        elif sys.argv[1] == 'lvm':
+            chlvm()
+        else:
+            help()
+    except IndexError:
+        help()
     
 if __name__ == '__main__':
        Conf()
