@@ -209,10 +209,11 @@ def listF():
 
 def stat():
     if os.path.isfile(pidfile):
-        print "mgr5backup.py is running as pid %s" % pidfile
+        pid=open(pidfile,  'r')
+        print "mgr5backup.py is running as pid %s" % pid
         sys.exit()
     else:
-        print "mgr5backup.py is not running"
+        print "mgr5backup.py is not running\n"
 
 
 def help():
