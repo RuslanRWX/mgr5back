@@ -200,15 +200,16 @@ def chlvm():
         print "LVM Error"
 
 def listF():
-    import re
  #  sql="select id,name,ip,mem,vcpu,vsize from vm;"
   # Servs=Mysqlget(sql)
   # for R in Servs:
    #    print "ID: "+R[0]+" Name: "+R[1]+" IP: "+R[2]+" Memory: "+R[3]+"M CPU: "+R[4]+" VSize: "+R[5]+"M"
-    sql="select id,name,ip,mem,vcpu,vsize from vm;"
+   # sql="select id,name,ip,mem,vcpu,vsize from vm;"
+   # sql="select vm,name,pool,size from volume where vm=\'%s\' and hostnode=\'%s\' and pool is not NULL;"%(R[0],NodeID)
+    sql="select vm.id,volume.name,vm.ip, vm.mem, vm.vcpu, vm.vsize, volume.pool  from vm  join volume on  volume.vm=vm.id and volume.pool is not NULL;"
     Servs=Mysqlget(sql)
     for R in Servs:
-        print "ID: ", R[0]," Name:", R[1]," IP:", R[2]," Memory:", R[3],"M CPU:", R[4]," VSize:", R[5],"M "
+            print "VM ID: ",R[0]," Name Store:", R[1]," IP:", R[2]," Memory:", R[3],"M CPU:", R[4]," VSize:", R[5],"M Pool Name: ",R[6]
     print  "Note: not backup ID: ", NoBackupID
 
 
