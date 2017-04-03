@@ -207,6 +207,13 @@ def listF():
             print "VM ID: ",R[0]," Name Store:", R[1]," IP:", R[2]," Memory:", R[3],"M CPU:", R[4]," VSize:", R[5],"M Pool Name: ",R[6]
     print  "Note: not backup ID: ", NoBackupID
 
+def stat():
+    if os.path.isfile(pidfile):
+        print "mgr5backup.py is running as pid %s" % pidfile
+        sys.exit()
+    else:
+        print "mgr5backup.py is not running"
+
 
 def help():
     print "Help function: Basic Usage:\n "
@@ -227,6 +234,8 @@ def Main():
             chlvm()
         elif sys.argv[1] == 'list':
             listF()
+        elif sys.argv[1] == "status":
+            stat()
         else:
             help()
     except IndexError:
