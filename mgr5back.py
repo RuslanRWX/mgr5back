@@ -198,7 +198,18 @@ def chlvm():
         print "LVM OK"
     else:
         print "LVM Error"
-    
+
+def listF():
+    import re
+ #  sql="select id,name,ip,mem,vcpu,vsize from vm;"
+  # Servs=Mysqlget(sql)
+  # for R in Servs:
+   #    print "ID: "+R[0]+" Name: "+R[1]+" IP: "+R[2]+" Memory: "+R[3]+"M CPU: "+R[4]+" VSize: "+R[5]+"M"
+    sql="select id,name,ip,mem,vcpu,vsize from vm;"
+    Servs=Mysqlget(sql)
+    for R in Servs:
+        print "ID: ", R[0]," Name:", R[1]," IP:", R[2]," Memory:", R[3],"M CPU:", R[4]," VSize:", R[5],"M "
+    print  "Note: not backup ID: ", NoBackupID
 
 
 def help():
@@ -206,7 +217,7 @@ def help():
     print "\tstart - Start full backup"
     print "\tid    - Start backup only one node, using by id number, example: ./mgr5backup.py id 15" 
     print "\tlvm   - Start check logical volumes"
-    
+    print "\tlist  - list available virtual machines"
     print  "\thelp  - Print help\n"
     
 def Main(): 
@@ -218,6 +229,8 @@ def Main():
             Search()
         elif sys.argv[1] == 'lvm':
             chlvm()
+        elif sys.argv[1] == 'list':
+            listF()
         else:
             help()
     except IndexError:
