@@ -204,7 +204,6 @@ def chlvm():
         check_lvm=0
 
 def chftp():
-    checkdate=7
     date0=datetime.datetime.now() - datetime.timedelta(days = checkdate)
     date=date0.strftime("%Y-%m-%d")
     print date
@@ -238,8 +237,9 @@ def help():
     print "\tstart      - Start full backup"
     print "\tid         - Start backup only one node, using by id number, example: ./mgr5backup.py id 15" 
     print "\tlvm        - Start check logical volumes"
-    print "\tlist       - list available virtual machines"
-    print "\tstatus     - Status "
+    print "\tlist       - display the virtual machine list"
+    print "\tstatus     - Status of process"
+    print "\tchftp      - Check data into your ftp server"
     print  "\thelp      - Print help\n"
     
 def Main(): 
