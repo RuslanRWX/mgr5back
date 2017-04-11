@@ -248,16 +248,16 @@ def CleanDirs():
         print "Nothing have cleaned is everthing ok"
 
 def chlvm():
-    global check_lvm
-    print "Start check logical volumes"
+    global check
+    print "Start check the logical volumes"
     cmd="lvs | grep snapshot"
     Ch=os.system(cmd)
     if Ch:
         print "LVM OK"
-        check_lvm=0
+        check=0
     else:
         print "LVM Error"
-        check_lvm=0
+        check=1
 
 def chftp():
     print "Start checking the ftp server\n"
@@ -340,12 +340,12 @@ def help():
     print "Help function: Basic Usage:\n "
     print "\tstart      - Start full backup"
     print "\tid         - Start backup only one VM, using by id number, example: ./mgr5backup.py id 15" 
-    print "\tlvm        - Start check logical volumes"
     print "\tlist       - display the virtual machine list"
     print "\tstatus     - Status of process"
     print "\tchftp      - Check data into your ftp server"
+    print "\tchlvm      - Start check the logical volumes"
     print "\tclean      - Remove old or excess directories in the Node ID directory of the ftp server"
-    print  "\thelp      - Print help\n"
+    print "\thelp       - Print help\n"
     
 def Main(): 
     try:
@@ -355,7 +355,7 @@ def Main():
         elif sys.argv[1] == 'start':
             Check()
             Search()
-        elif sys.argv[1] == 'lvm':
+        elif sys.argv[1] == 'chlvm':
             chlvm()
         elif sys.argv[1] == 'list':
             listF()
