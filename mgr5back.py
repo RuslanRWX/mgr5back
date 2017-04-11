@@ -144,7 +144,7 @@ class workftp():
     def __init__(self):
         import ftplib
         from ftplib import FTP
-        print "Connect to FTP server"
+        #print "Connect to FTP server"
         with open(ftp_conn) as fd:
             doc = xmltodict.parse(fd.read())
             nameb=doc['doc']['name']
@@ -167,7 +167,34 @@ class workftp():
     def List(self): 
         files = self.ftp.nlst()
         return files
-
+    def FtpRmT(self, path):
+        import ftplib
+        from ftplib import FTP
+        Fpath="~/"+NodeID
+        self.ftp.cwd(Fpath)
+        wd = self.ftp.pwd()
+        #print wd
+        try:
+            names = self.ftp.nlst(path)
+        except ftplib.all_errors as e:
+            print e
+            return
+        for name in names:
+            if os.path.split(name)[1] in ('.', '..'): continue
+            w=workftp()
+            try:
+                self.ftp.cwd(name)  # if we can cwd to it, it's a folder
+                self.ftp.cwd(wd)  # don't try a nuke a folder we're in
+                w.FtpRmT(name)
+            except ftplib.all_errors:
+                self.ftp.delete(name)
+        try:
+            self.ftp.rmd(path)
+        except ftplib.all_errors as e:
+            print e
+    
+    
+    
     
 def Clean(id):
     print "Start clean ftp server, older then:", SaveDate,"days"
@@ -190,6 +217,35 @@ def Clean(id):
             w.ftp.cwd("~/"+path)
             w.ftp.rmd(R)    # Delete old dir
     w.ftp.quit()
+    
+    
+def CleanDirs():
+    sql="select vm.id from volume join vm on vm.id=volume.vm where volume.hostnode=\'%s\' and volume.pool is not NULL and volume.vm not in (%s);"%(NodeID,NoBackupID)
+    Servs=Mysqlget(sql)
+    w=workftp()
+    Sset=set()
+    Lset=set()
+    print "Start remove old or excess directories in the Node ID directory of the ftp server"
+    for S in Servs:
+        import string
+        S=str(S).replace("(","")
+        S=S.replace(")", "")
+        S=S.replace(",", "")
+        Sset.add(S)
+    try:
+        w.ftp.cwd(NodeID)
+        ListDirs=w.List()
+        Res=set(ListDirs)-Sset
+        for dir in Res:
+            print "Remove a directory %s"%(dir)
+            w.FtpRmT(dir)
+    except:
+        from colorama import Fore
+        print (Fore.RED+"\nError !!!"+Fore.RESET+" Have not a directory name as the node id#%s on remote ftp server \n"%(NodeID))
+    if Res:
+        print "FTP server have cleaned,bye!"
+    else:
+        print "Nothing have cleaned is everthing ok"
 
 def chlvm():
     global check_lvm
@@ -204,19 +260,67 @@ def chlvm():
         check_lvm=0
 
 def chftp():
+    print "Start checking the ftp server\n"
     date0=datetime.datetime.now() - datetime.timedelta(days = checkdate)
     date=date0.strftime("%Y-%m-%d")
-    print date
-    sql="select vm.id, volume.name from volume join vm on vm.id=volume.vm where volume.hostnode=\'%s\' and volume.pool is not NULL and volume.vm not in (%s) and knownboottime < \'%s\' ;"%(NodeID,NoBackupID,date)
+    #print date
+    sql="select vm.id, volume.name from volume join vm on vm.id=volume.vm where volume.hostnode=\'%s\' and volume.pool is not NULL and volume.vm not in (%s) and knownboottime < \'%s\';"%(NodeID,NoBackupID,date)
     Servs=Mysqlget(sql)
+    w=workftp()
+    date=date0.strftime("%Y%m%d")
+    dateCh="%s000000"%(date)
     for R in Servs:
-        print R[0]
-    
+        resultDir=[]
+        resultDir0=[]
+        CheckFile=[]
+        ChF=[]
+        #print "Start check host %s"%(R[0])
+        path="%s/%s/"%(NodeID, R[0])
+    #   NodeID + "/",hostid,"/"
+        #print path
+        w.ftp.cwd("~/")
+        try:
+            w.ftp.cwd(path)
+            ListDirs=w.List()
+            resultDir=filter(lambda x: dateCh <=x , ListDirs)
+            if resultDir != []:
+                for ts in resultDir:
+                    file="~/%s/%s/%s/"%(NodeID, R[0], ts)
+                    w.ftp.cwd(file)
+                    ChF="%s_%s"%(R[1], ts)
+                    try:
+                        FileR=w.List()
+                        if filter(lambda E: ChF == E,  FileR):
+                            #print "Check file %s is OK "%(ChF)
+                            CheckFile="0"
+                        else:
+                             pass
+                    except:
+                        pass
+        except:
+            resultDir0="NonDir"
+        from colorama import Fore
+        print  (Fore.YELLOW+"Check the volume %s, the virtual machine ID %s"%(R[1], R[0])+Fore.RESET)
+        if resultDir:
+            print "Check DIR %s is Ok"%(R[0])
+            #CheckftpFiles(R[0], Dir, R[1])
+            if CheckFile == "0":
+                print "Check a file %s is OK "%(ChF)
+            else:
+                print (Fore.RED+"Check a file %s is ERROR"%(ChF)+Fore.RESET)
+        elif resultDir0 == "NonDir":
+            print (Fore.RED+"The virtual machine ID %s, have not the directory name like %s, it's ERROR"%(R[0], R[0])+Fore.RESET)
+        else:
+            print "The virtual machine ID %s is Error. You have to check it."%(R[0])
+        print "\n"
+
+    print "Check period of date %s"%(dateCh)
+
 
 
 def listF():
     print "vm storage #####################################################"
-    sql="select vm.id,volume.name,vm.ip, vm.mem, vm.vcpu, vm.vsize, volume.pool  from vm  join volume on  volume.vm=vm.id and volume.pool is not NULL;"
+    sql="select vm.id,volume.name,vm.ip, vm.mem, vm.vcpu, vm.vsize, volume.pool  from vm  join volume on volume.vm=vm.id and volume.pool is not NULL;"
     Servs=Mysqlget(sql)
     for R in Servs:
             print "VM ID: ",R[0]," Name Store:", R[1]," IP:", R[2]," Memory:", R[3],"M CPU:", R[4]," VSize:", R[5],"M Pool Name: ",R[6]
@@ -240,15 +344,15 @@ def help():
     print "\tlist       - display the virtual machine list"
     print "\tstatus     - Status of process"
     print "\tchftp      - Check data into your ftp server"
+    print "\tclean      - Remove old or excess directories in the Node ID directory of the ftp server"
     print  "\thelp      - Print help\n"
     
 def Main(): 
     try:
         if sys.argv[1] == 'id':
-            Conf()
+            Check()
             StartBackup(sys.argv[2])
         elif sys.argv[1] == 'start':
-            Conf()
             Check()
             Search()
         elif sys.argv[1] == 'lvm':
@@ -259,11 +363,14 @@ def Main():
             stat()
         elif sys.argv[1] == "chftp":
             chftp()
+        elif sys.argv[1] == "clean":
+            CleanDirs()
         else:
             help()
     except IndexError:
         help()
     
 if __name__ == '__main__':
-       Main()
+    Conf()
+    Main()
 exit(0) 
