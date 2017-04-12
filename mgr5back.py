@@ -295,7 +295,7 @@ def chftp():
     Servs = Mysqlget(sql)
     w = workftp()
     date = date0.strftime("%Y%m%d")
-    dateCh = "%s595959" % (date)
+    dateCh = "%s000000" % (date)
     for R in Servs:
         resultDir = []
         resultDir0 = []
