@@ -412,6 +412,7 @@ def Main():
         elif sys.argv[1] == 'start':
             Check()
             Search()
+            os.remove(pidfile)
             Zabbix()
         elif sys.argv[1] == 'chlvm':
             chlvm()
