@@ -295,7 +295,7 @@ def chftp():
     Servs = Mysqlget(sql)
     w = workftp()
     date = date0.strftime("%Y%m%d")
-    dateCh = "%s000000" % (date)
+    dateCh = "%s595959" % (date)
     for R in Servs:
         resultDir = []
         resultDir0 = []
@@ -341,7 +341,7 @@ def chftp():
             print (Fore.RED + "The virtual machine ID %s, have not the directory name like %s, it's ERROR" %
                    (R[0], R[0]) + Fore.RESET)
         else:
-            print "The virtual machine ID %s is Error. You have to check it." % (R[0])
+            print  (Fore.RED +"The virtual machine ID %s is Error. You have to check it." % (R[0])+ Fore.RESET)
         print "\n"
 
     print "Check period of date %s" % (dateCh)
