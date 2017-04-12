@@ -409,6 +409,7 @@ def Main():
         if sys.argv[1] == 'id':
             Check()
             StartBackup(sys.argv[2])
+            os.remove(pidfile)
         elif sys.argv[1] == 'start':
             Check()
             Search()
