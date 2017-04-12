@@ -1,6 +1,6 @@
 #!/usr/bin/env python
 # Copyright (c) 2017 Ruslan Variushkin,  ruslan@host4.biz
-# Version 0.3.1
+# Version 0.4.1
 # mgr5back.py is an open-source software to backup virtual machines on the
 # ISP VMmanager version 5
 import sys
@@ -24,6 +24,8 @@ def Conf():
     global Gzip
     global SaveDate
     global checkdate
+    global check
+    global Zabbix_Mark_File
     NodeID = config['main']['NodeID']
     NoBackupID = config['main']['NoBackupID']
     ftp_conn = config['main']['ftp_conn']
@@ -35,14 +37,20 @@ def Conf():
     SaveDate = int(SaveDate)
     checkdate = config['main']['checkdate']
     checkdate = int(checkdate)
-
+    check=set()
+    Zabbix_Mark_File = config['main']['ZabbixMarkFile']
 
 def Check():
     if os.path.isfile(pidfile):
-        print "%s already exists, exiting" % pidfile
-        sys.exit()
+        if  sys.argv[1] == 'chfull':
+            check.add("1")
+        else:
+            print "%s already exists, exiting" % pidfile
+            sys.exit()
     else:
-        file(pidfile, 'w').write(pid)
+        if sys.argv[1] == 'start':
+            file(pidfile, 'w').write(pid) 
+            file(Zabbix_Mark_File, "w").write("1")
 
 
 def Mysqlget(SQL):
@@ -273,16 +281,14 @@ def CleanDirs():
 
 
 def chlvm():
-    global check
     print "Start check the logical volumes"
     cmd = "lvs | grep snapshot"
     Ch = os.system(cmd)
     if Ch:
         print "LVM OK"
-        check = 0
     else:
         print "LVM Error"
-        check = 1
+        check.add("2")
 
 
 def chftp():
@@ -337,11 +343,14 @@ def chftp():
             else:
                 print (Fore.RED + "Check a file %s is ERROR" %
                        (ChF) + Fore.RESET)
+                check.add("3")
         elif resultDir0 == "NonDir":
             print (Fore.RED + "The virtual machine ID %s, have not the directory name like %s, it's ERROR" %
                    (R[0], R[0]) + Fore.RESET)
+            check.add("3")
         else:
             print  (Fore.RED +"The virtual machine ID %s is Error. You have to check it." % (R[0])+ Fore.RESET)
+            check.add("3")
         print "\n"
 
     print "Check period of date %s" % (dateCh)
@@ -361,10 +370,26 @@ def stat():
         pid = open(pidfile,  'r')
         print "mgr5backup.py is running as pid %s" % pid.read()
         pid.close()
-        sys.exit()
     else:
         print "mgr5backup.py is not running\n"
 
+def Chfull():
+    if "1" in check:
+        pid = open(pidfile,  'r')
+        print "mgr5backup.py now is running as pid %s" % pid.read()
+    if "2" in check:
+        print "LVM Error"
+    if "3" in check:
+        print "FTP Server ERROR"
+
+def Zabbix():
+    ZF = open(Zabbix_Mark_File,  'w')
+    if "2" in check:
+        ZF.write("2")
+    if "3" in check:
+         ZF.write("3")
+    if "2" in check and "3" in check:
+         ZF.write("4")
 
 def help():
     print "Help function: Basic Usage:\n "
@@ -374,6 +399,7 @@ def help():
     print "\tstatus     - Status of process"
     print "\tchftp      - Check data into your ftp server"
     print "\tchlvm      - Start check the logical volumes"
+    print "\tchfull     - Full check"
     print "\tclean      - Remove old or excess directories in the Node ID directory of the ftp server"
     print "\thelp       - Print help\n"
 
@@ -386,6 +412,7 @@ def Main():
         elif sys.argv[1] == 'start':
             Check()
             Search()
+            Zabbix()
         elif sys.argv[1] == 'chlvm':
             chlvm()
         elif sys.argv[1] == 'list':
@@ -396,6 +423,11 @@ def Main():
             chftp()
         elif sys.argv[1] == "clean":
             CleanDirs()
+        elif sys.argv[1] == "chfull":
+            Check()
+            chlvm()
+            chftp()
+            Chfull()
         else:
             help()
     except IndexError:
