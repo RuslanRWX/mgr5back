@@ -429,11 +429,10 @@ def Main():
         elif sys.argv[1] == "clean":
             CleanDirs()
         elif sys.argv[1] == "chfull":
-            #Check()
-            #chlvm()
-            #chftp()
-            #Chfull()
-            Zabbix()
+            Check()
+            chlvm()
+            chftp()
+            Chfull()
         else:
             help()
     except IndexError:
