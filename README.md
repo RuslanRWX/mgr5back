@@ -16,5 +16,7 @@ pip install xmltodict
 
 pip install configparser
 
+pip install colorama
+
 
 

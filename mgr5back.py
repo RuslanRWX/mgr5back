@@ -290,8 +290,8 @@ def chftp():
     date0 = datetime.datetime.now() - datetime.timedelta(days=checkdate)
     date = date0.strftime("%Y-%m-%d")
     # print date
-    sql = "select vm.id, volume.name from volume join vm on vm.id=volume.vm where volume.hostnode=\'%s\' and volume.pool is not NULL and volume.vm not in (%s) and knownboottime < \'%s\';" % (
-        NodeID, NoBackupID, date)
+    sql = "select vm.id, volume.name from volume join vm on vm.id=volume.vm where volume.hostnode=\'%s\' and volume.pool is not NULL and volume.vm not in (%s);" % (
+        NodeID, NoBackupID)
     Servs = Mysqlget(sql)
     w = workftp()
     date = date0.strftime("%Y%m%d")
