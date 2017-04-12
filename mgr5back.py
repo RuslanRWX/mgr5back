@@ -273,7 +273,7 @@ def CleanDirs():
     except:
         from colorama import Fore
         print (Fore.RED + "\nError !!!" + Fore.RESET +
-               " Have not a directory name as the node id#%s on remote ftp server \n" % (NodeID))
+               " You have an error on the ftp server. Check directory name as the node id%s,permissions etc") % (NodeID)
     if Res:
         print "FTP server have cleaned,bye!"
     else:
