@@ -384,12 +384,15 @@ def Chfull():
 
 def Zabbix():
     ZF = open(Zabbix_Mark_File,  'w')
-    if "2" in check:
-        ZF.write("2")
-    if "3" in check:
-         ZF.write("3")
-    if "2" in check and "3" in check:
-         ZF.write("4")
+    if "2"  in check or "3" in check:
+        if "2" in check:
+            ZF.write("2")
+        if "3" in check:
+            ZF.write("3")
+    else:
+            if "0" in check:
+                ZF.write("0")
+    ZF.close()
 
 def help():
     print "Help function: Basic Usage:\n "
@@ -426,10 +429,11 @@ def Main():
         elif sys.argv[1] == "clean":
             CleanDirs()
         elif sys.argv[1] == "chfull":
-            Check()
-            chlvm()
-            chftp()
-            Chfull()
+            #Check()
+            #chlvm()
+            #chftp()
+            #Chfull()
+            Zabbix()
         else:
             help()
     except IndexError:
