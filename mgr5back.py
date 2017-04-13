@@ -384,6 +384,8 @@ def Chfull():
 
 def Zabbix():
     ZF = open(Zabbix_Mark_File,  'w')
+    chlvm()
+    chftp()
     if "2"  in check or "3" in check:
         if "2" in check:
             ZF.write("2")
