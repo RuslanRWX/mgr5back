@@ -383,9 +383,9 @@ def Chfull():
         print "FTP Server ERROR"
 
 def Zabbix():
-    ZF = open(Zabbix_Mark_File,  'w')
     chlvm()
     chftp()
+    ZF = open(Zabbix_Mark_File,  'w')
     if "2"  in check or "3" in check:
         if "2" in check:
             ZF.write("2")
