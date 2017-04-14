@@ -390,17 +390,19 @@ def Zabbix():
     chlvm()
     chftp()
     ZF = open(Zabbix_Mark_File,  'w')
-    if "2"  in check or "3" in check:
-        if "2" in check:
-            ZLF = open(Zabbix_LVM_File,  'w')
-            ZLF.write("1")
-            ZLF.close()
-        if "3" in check:
-            ZFF = open(Zabbix_FTP_File,  'w')
-            ZFF.write("1")
-            ZFF.close()
+    ZLF = open(Zabbix_LVM_File,  'w')
+    ZFF = open(Zabbix_FTP_File,  'w')
+    if "2" in check:
+        ZLF.write("1")
     else:
-        ZF.write("0")
+        ZLF.write("0")
+    if "3" in check:
+        ZFF.write("1")
+    else:
+        ZFF.write("0")
+    ZF.write("0")
+    ZLF.close()
+    ZFF.close()
     ZF.close()
 
 def help():
