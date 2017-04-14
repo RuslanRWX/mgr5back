@@ -26,6 +26,8 @@ def Conf():
     global checkdate
     global check
     global Zabbix_Mark_File
+    global Zabbix_LVM_File
+    global Zabbix_FTP_File
     NodeID = config['main']['NodeID']
     NoBackupID = config['main']['NoBackupID']
     ftp_conn = config['main']['ftp_conn']
@@ -39,6 +41,8 @@ def Conf():
     checkdate = int(checkdate)
     check=set()
     Zabbix_Mark_File = config['main']['ZabbixMarkFile']
+    Zabbix_LVM_File = config['main']['ZabbixLVMFile']
+    Zabbix_FTP_File = config['main']['ZabbixFTPFile']
 
 def Check():
     if os.path.isfile(pidfile):
@@ -388,12 +392,15 @@ def Zabbix():
     ZF = open(Zabbix_Mark_File,  'w')
     if "2"  in check or "3" in check:
         if "2" in check:
-            ZF.write("2")
+            ZLF = open(Zabbix_LVM_File,  'w')
+            ZLF.write("1")
+            ZLF.close()
         if "3" in check:
-            ZF.write("3")
+            ZFF = open(Zabbix_FTP_File,  'w')
+            ZFF.write("1")
+            ZFF.close()
     else:
-            if "0" in check:
-                ZF.write("0")
+        ZF.write("0")
     ZF.close()
 
 def help():
