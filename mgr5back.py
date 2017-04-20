@@ -117,11 +117,11 @@ def StartBackup(ServerID):
         W.CreateLVM(R[3])
     for R in Serv:
         W = work(R[0], R[1], R[2], date)
-        if (Gzip == 'yes') or 'Yes':
+        if Gzip.lower() == 'yes':
             W.CreateGzip()
         W.PutFtp()
         W.RemoveLVM()
-        if (Gzip == 'yes') or 'Yes':
+        if Gzip.lower() == 'yes':
             W.RmFile()
         Clean(R[0])
 
@@ -136,7 +136,7 @@ class work:
         self.filez = BackDir + "/" + Name + "_" + date
         self.NameImgFtp = Name + "_" + date
         self.dftp = self.Name + "/" + date
-        if (Gzip == 'yes') or 'Yes':
+        if Gzip.lower() == 'yes':
             self.filez = BackDir + "/" + Name + "_" + date
         else:
             self.filez = self.PoolName
