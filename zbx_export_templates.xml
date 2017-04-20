@@ -1,10 +1,10 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <zabbix_export>
     <version>3.2</version>
-    <date>2017-04-14T12:22:58Z</date>
+    <date>2017-04-20T11:29:58Z</date>
     <groups>
         <group>
-            <name>Templates</name>
+            <name>Self Made</name>
         </group>
     </groups>
     <templates>
@@ -14,18 +14,57 @@
             <description/>
             <groups>
                 <group>
-                    <name>Templates</name>
+                    <name>Self Made</name>
                 </group>
             </groups>
             <applications/>
             <items>
+                <item>
+                    <name>Mgr5back Error</name>
+                    <type>0</type>
+                    <snmp_community/>
+                    <multiplier>0</multiplier>
+                    <snmp_oid/>
+                    <key>system.run[cat /tmp/Zabbix.mgr5back.error.log]</key>
+                    <delay>30</delay>
+                    <history>90</history>
+                    <trends>365</trends>
+                    <status>0</status>
+                    <value_type>3</value_type>
+                    <allowed_hosts/>
+                    <units/>
+                    <delta>0</delta>
+                    <snmpv3_contextname/>
+                    <snmpv3_securityname/>
+                    <snmpv3_securitylevel>0</snmpv3_securitylevel>
+                    <snmpv3_authprotocol>0</snmpv3_authprotocol>
+                    <snmpv3_authpassphrase/>
+                    <snmpv3_privprotocol>0</snmpv3_privprotocol>
+                    <snmpv3_privpassphrase/>
+                    <formula>1</formula>
+                    <delay_flex/>
+                    <params/>
+                    <ipmi_sensor/>
+                    <data_type>0</data_type>
+                    <authtype>0</authtype>
+                    <username/>
+                    <password/>
+                    <publickey/>
+                    <privatekey/>
+                    <port/>
+                    <description/>
+                    <inventory_link>0</inventory_link>
+                    <applications/>
+                    <valuemap/>
+                    <logtimefmt/>
+                </item>
                 <item>
                     <name>Mgr5back Check FTP</name>
                     <type>0</type>
                     <snmp_community/>
                     <multiplier>0</multiplier>
                     <snmp_oid/>
-                    <key>system.run[cat /tmp/ZabbixFTP.log]</key>
+                    <key>system.run[cat /tmp/Zabbix.mgr5back.FTP.log]</key>
                     <delay>30</delay>
                     <history>90</history>
                     <trends>365</trends>
@@ -64,7 +103,7 @@
                     <snmp_community/>
                     <multiplier>0</multiplier>
                     <snmp_oid/>
-                    <key>system.run[cat /tmp/ZabbixLVM.log]</key>
+                    <key>system.run[cat /tmp/Zabbix.mgr5back.LVM.log]</key>
                     <delay>30</delay>
                     <history>90</history>
                     <trends>365</trends>
@@ -103,7 +142,7 @@
                     <snmp_community/>
                     <multiplier>0</multiplier>
                     <snmp_oid/>
-                    <key>system.run[cat /tmp/ZabbixMark.log]</key>
+                    <key>system.run[cat /tmp/Zabbix.mgr5back.Mark.log]</key>
                     <delay>180</delay>
                     <history>90</history>
                     <trends>365</trends>
@@ -146,7 +185,23 @@
     </templates>
     <triggers>
         <trigger>
-            <expression>{App Mgr5back:system.run[cat /tmp/ZabbixFTP.log].last()}=1</expression>
+            <expression>{App Mgr5back:system.run[cat /tmp/Zabbix.mgr5back.error.log].last()}=1</expression>
+            <recovery_mode>0</recovery_mode>
+            <recovery_expression/>
+            <name>Mgr5back Error</name>
+            <correlation_mode>0</correlation_mode>
+            <correlation_tag/>
+            <url/>
+            <status>0</status>
+            <priority>4</priority>
+            <description/>
+            <type>0</type>
+            <manual_close>0</manual_close>
+            <dependencies/>
+            <tags/>
+        </trigger>
+        <trigger>
+            <expression>{App Mgr5back:system.run[cat /tmp/Zabbix.mgr5back.FTP.log].last()}=1</expression>
             <recovery_mode>0</recovery_mode>
             <recovery_expression/>
             <name>Mgr5back FTP Server error</name>
@@ -162,7 +217,7 @@
             <tags/>
         </trigger>
         <trigger>
-            <expression>{App Mgr5back:system.run[cat /tmp/ZabbixMark.log].last()}=1</expression>
+            <expression>{App Mgr5back:system.run[cat /tmp/Zabbix.mgr5back.Mark.log].last()}=1</expression>
             <recovery_mode>0</recovery_mode>
             <recovery_expression/>
             <name>Mgr5back is running</name>
@@ -178,7 +233,7 @@
             <tags/>
         </trigger>
         <trigger>
-            <expression>{App Mgr5back:system.run[cat /tmp/ZabbixLVM.log].last()}=1</expression>
+            <expression>{App Mgr5back:system.run[cat /tmp/Zabbix.mgr5back.LVM.log].last()}=1</expression>
             <recovery_mode>0</recovery_mode>
             <recovery_expression/>
             <name>Mgr5back LVM Error</name>
@@ -222,7 +277,7 @@
                     <type>0</type>
                     <item>
                         <host>App Mgr5back</host>
-                        <key>system.run[cat /tmp/ZabbixMark.log]</key>
+                        <key>system.run[cat /tmp/Zabbix.mgr5back.Mark.log]</key>
                     </item>
                 </graph_item>
             </graph_items>
