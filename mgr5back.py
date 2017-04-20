@@ -10,7 +10,8 @@ import time
 import configparser
 import datetime
 pid = str(os.getpid())
-
+import ftplib
+from ftplib import FTP
 
 def Conf():
     config = configparser.ConfigParser()
@@ -28,6 +29,7 @@ def Conf():
     global Zabbix_Mark_File
     global Zabbix_LVM_File
     global Zabbix_FTP_File
+    global Zabbix_Error_File
     NodeID = config['main']['NodeID']
     NoBackupID = config['main']['NoBackupID']
     ftp_conn = config['main']['ftp_conn']
@@ -43,6 +45,7 @@ def Conf():
     Zabbix_Mark_File = config['main']['ZabbixMarkFile']
     Zabbix_LVM_File = config['main']['ZabbixLVMFile']
     Zabbix_FTP_File = config['main']['ZabbixFTPFile']
+    Zabbix_Error_File = config['main']['ZabbixErrorFile']
 
 def Check():
     if os.path.isfile(pidfile):
@@ -173,8 +176,6 @@ class work:
 
 class workftp():
     def __init__(self):
-        import ftplib
-        from ftplib import FTP
         # print "Connect to FTP server"
         with open(ftp_conn) as fd:
             doc = xmltodict.parse(fd.read())
@@ -186,8 +187,6 @@ class workftp():
         self.ftp.login(self.user, self.passftp)
 
     def Path(self, path):
-        import ftplib
-        from ftplib import FTP
         try:
             self.ftp.cwd(path)
         except ftplib.error_perm:
@@ -195,7 +194,10 @@ class workftp():
             self.ftp.cwd(path)
 
     def Put(self,  NameFile, File):
-        self.ftp.storbinary("STOR %s" % (NameFile), open(File))
+        try:
+            self.ftp.storbinary("STOR %s" % (NameFile), open(File))
+        except ftplib.error_perm:
+            Error()
         self.ftp.quit()
 
     def List(self):
@@ -203,8 +205,6 @@ class workftp():
         return files
 
     def FtpRmT(self, path):
-        import ftplib
-        from ftplib import FTP
         Fpath = "~/" + NodeID
         self.ftp.cwd(Fpath)
         wd = self.ftp.pwd()
@@ -404,6 +404,14 @@ def Zabbix():
     ZLF.close()
     ZFF.close()
     ZF.close()
+
+
+def Error():
+    print "Error !"
+    file=open(Zabbix_Error_File,  "w")
+    file.write("1")
+    os.remove(pidfile)
+    Zabbix()
 
 def help():
     print "Help function: Basic Usage:\n "
