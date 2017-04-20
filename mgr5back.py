@@ -196,7 +196,7 @@ class workftp():
     def Put(self,  NameFile, File):
         try:
             self.ftp.storbinary("STOR %s" % (NameFile), open(File))
-        except ftplib.error_perm:
+        except IOError:
             Error()
         self.ftp.quit()
 
@@ -410,6 +410,7 @@ def Error():
     print "Error !"
     file=open(Zabbix_Error_File,  "w")
     file.write("1")
+    file.close()
     os.remove(pidfile)
     Zabbix()
 
@@ -433,6 +434,9 @@ def Main():
             StartBackup(sys.argv[2])
             os.remove(pidfile)
         elif sys.argv[1] == 'start':
+            file=open(Zabbix_Error_File,  "w")
+            file.write("0")
+            file.close()
             Check()
             Search()
             os.remove(pidfile)
