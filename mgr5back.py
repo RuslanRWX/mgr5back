@@ -98,13 +98,13 @@ def Search():
 
 def StartBackup(ServerID):
     date = datetime.datetime.now().strftime("%Y%m%d%H%M%S")
-    # print ServerID
+    print "Start backup-VM ID %s "% (ServerID)
     sql = "select vm,name,pool,size from volume where vm=\'%s\' and hostnode=\'%s\' and pool is not NULL;" % (
         ServerID, NodeID)
     Serv = Mysqlget(sql)
     if not Serv:
         print "Virtual machine does not exist"
-        exit(1)
+        return None 
     print "Start backup: " + Serv[0][1]
     print "Start sync"
     cmd = "virsh send-key %s KEY_LEFTALT KEY_SYSRQ KEY_S" % (Serv[0][1])
@@ -413,6 +413,7 @@ def Error():
     file.close()
     os.remove(pidfile)
     Zabbix()
+
 
 def help():
     print "Help function: Basic Usage:\n "
