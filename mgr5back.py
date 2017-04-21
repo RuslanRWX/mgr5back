@@ -284,7 +284,7 @@ def CleanDirs(remove="True"):
     if Res and remove == "True":
         print "Old or excess data have been cleaned on the FTP server,bye!"
     else:
-        print "Nothing have cleaned is everthing ok"
+        print "Nothing have been cleaned is everthing ok"
 
 
 def chlvm():
