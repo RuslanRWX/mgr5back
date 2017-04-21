@@ -153,7 +153,7 @@ class work:
         os.system(cmd)
 
     def RmFile(self):
-        print "Remove file:" + self.filez
+        print "Remove file or directory:" + self.filez
         cmd = "rm %s" % (self.filez)
         os.system(cmd)
 
@@ -290,7 +290,7 @@ def ftpdel(path):
     w = workftp()
     w.ftp.cwd(NodeID)
     print "Remove the directory %s" % (path)
-    w.FtpRmT(path)
+    w.RmFile(path)
 
 def chlvm():
     print "Start check the logical volumes"
