@@ -288,9 +288,8 @@ def CleanDirs(remove="True"):
 
 def ftpdel(path):
     w = workftp()
-    w.ftp.cwd(NodeID)
     print "Remove the directory %s" % (path)
-    w.RmFile(path)
+    w.FtpRmT(path)
 
 def chlvm():
     print "Start check the logical volumes"
