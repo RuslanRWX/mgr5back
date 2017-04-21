@@ -281,8 +281,8 @@ def CleanDirs(remove="True"):
         from colorama import Fore
         print (Fore.RED + "\nError !!!" + Fore.RESET +
                " You have an error on the ftp server. Check directory name as the node id#%s,permissions etc") % (NodeID)
-    if Res:
-        print "FTP server have cleaned,bye!"
+    if Res and remove == "True":
+        print "Old or excess data have been cleaned on the FTP server,bye!"
     else:
         print "Nothing have cleaned is everthing ok"
 
