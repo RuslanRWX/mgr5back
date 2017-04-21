@@ -200,15 +200,13 @@ class workftp():
             Error()
         self.ftp.quit()
 
-    def List(self):
-        files = self.ftp.nlst()
-        return files
-
-    def FtpRmT(self, path,  Art="Dir"):
+    def FtpDel(self):
         Fpath = "~/" + NodeID
         self.ftp.cwd(Fpath)
-        if Atr == "Dir":
-            wd = self.ftp.pwd()
+    def FtpRmT(self, path):
+        Fpath = "~/" + NodeID
+        self.ftp.cwd(Fpath)
+        wd = self.ftp.pwd()
         # print wd
         try:
             names = self.ftp.nlst(path)
@@ -290,7 +288,7 @@ def CleanDirs(remove="True"):
 def ftpdel(path):
     w = workftp()
     print "Remove the directory %s" % (path)
-    w.FtpRmT(path)
+    w.ftp.delete(path)
 
 def chlvm():
     print "Start check the logical volumes"
