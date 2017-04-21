@@ -55,7 +55,7 @@ def Check():
             print "%s already exists, exiting" % pidfile
             sys.exit()
     else:
-        if sys.argv[1] == 'start':
+        if sys.argv[1] == 'start' or 'id':
             file(pidfile, 'w').write(pid) 
             file(Zabbix_Mark_File, "w").write("1")
 
