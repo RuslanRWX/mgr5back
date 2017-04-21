@@ -199,10 +199,11 @@ class workftp():
         except IOError:
             Error()
         self.ftp.quit()
+        
+    def List(self):
+        files = self.ftp.nlst()
+        return files
 
-    def FtpDel(self):
-        Fpath = "~/" + NodeID
-        self.ftp.cwd(Fpath)
     def FtpRmT(self, path):
         Fpath = "~/" + NodeID
         self.ftp.cwd(Fpath)
@@ -210,7 +211,7 @@ class workftp():
         # print wd
         try:
             names = self.ftp.nlst(path)
-        except ftplib.all_errors:
+        except ftplib.all_errors as e:
             return
         for name in names:
             if os.path.split(name)[1] in ('.', '..'):
