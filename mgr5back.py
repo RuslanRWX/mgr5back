@@ -230,7 +230,7 @@ class workftp():
             print e
 
 
-def Clean(id):
+def Clean(id,  remove = "True"):
     print "Start clean ftp server, older then:", SaveDate, "days"
     w = workftp()
     path = NodeID + "/%s/" % (id)
@@ -241,7 +241,7 @@ def Clean(id):
     date2 = date.strftime("%Y%m%d000000")
     print "Check date: " + date2
     for R in ListDirs:
-        if date2 > R:
+        if date2 > R and remove == "True":
             w.ftp.cwd(R)
             ListFile = w.List()
             for F in ListFile:
@@ -425,6 +425,7 @@ def help():
     print "\tchlvm      - Start check the logical volumes"
     print "\tchfull     - Full check"
     print "\tclean      - Remove old or excess directories in the Node ID directory of the ftp server"
+    print "\tftpold     - Old or excess directories in the Node ID directory of the ftp server"
     print "\thelp       - Print help\n"
 
 
