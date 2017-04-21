@@ -211,7 +211,7 @@ class workftp():
         # print wd
         try:
             names = self.ftp.nlst(path)
-        except ftplib.all_errors as e:
+        except ftplib.all_errors:
             return
         for name in names:
             if os.path.split(name)[1] in ('.', '..'):
