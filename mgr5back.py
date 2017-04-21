@@ -276,7 +276,7 @@ def CleanDirs(remove="True"):
                 print "Remove a directory %s" % (dir)
                 w.FtpRmT(dir)
             else:
-                print "Old or excess directory %s" % (dir)
+                print "\nOld or excess directory %s\n" % (dir)
     except:
         from colorama import Fore
         print (Fore.RED + "\nError !!!" + Fore.RESET +
@@ -284,7 +284,7 @@ def CleanDirs(remove="True"):
     if Res and remove == "True":
         print "Old or excess data have been cleaned on the FTP server,bye!"
     else:
-        print "Nothing have been cleaned is everthing ok"
+        print "Nothing have been cleaned"
 
 
 def chlvm():
