@@ -273,10 +273,10 @@ def CleanDirs(remove="True"):
         Res = set(ListDirs) - Sset
         for dir in Res:
             if remove == "True":
-                print "Remove a directory %s" % (dir)
+                print "Remove the directory %s" % (dir)
                 w.FtpRmT(dir)
             else:
-                print "\nOld or excess directory %s\n" % (dir)
+                print "\nOld or excess file or directory %s\n" % (dir)
     except:
         from colorama import Fore
         print (Fore.RED + "\nError !!!" + Fore.RESET +
@@ -286,6 +286,11 @@ def CleanDirs(remove="True"):
     else:
         print "Nothing have been cleaned"
 
+def ftpdel(path):
+    w = workftp()
+    w.ftp.cwd(NodeID)
+    print "Remove the directory %s" % (path)
+    w.FtpRmT(path)
 
 def chlvm():
     print "Start check the logical volumes"
@@ -429,6 +434,7 @@ def help():
     print "\tchfull     - Full check"
     print "\tclean      - Remove old or excess directories in the Node ID directory of the ftp server"
     print "\tftpold     - Old or excess directories in the Node ID directory of the ftp server"
+    print "\tftpdel     - Remove some file or directory on the FTP server"
     print "\thelp       - Print help\n"
 
 
@@ -458,6 +464,8 @@ def Main():
             CleanDirs()
         elif sys.argv[1] == "ftpold":
             CleanDirs(remove="False")
+        elif sys.argv[1] == "ftpdel":
+            ftpdel(sys.argv[2])
         elif sys.argv[1] == "chfull":
             Check()
             chlvm()
