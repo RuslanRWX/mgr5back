@@ -230,7 +230,7 @@ class workftp():
             print e
 
 
-def Clean(id,  remove = "True"):
+def Clean(id):
     print "Start clean ftp server, older then:", SaveDate, "days"
     w = workftp()
     path = NodeID + "/%s/" % (id)
@@ -241,7 +241,7 @@ def Clean(id,  remove = "True"):
     date2 = date.strftime("%Y%m%d000000")
     print "Check date: " + date2
     for R in ListDirs:
-        if date2 > R and remove == "True":
+        if date2 > R:
             w.ftp.cwd(R)
             ListFile = w.List()
             for F in ListFile:
@@ -253,7 +253,7 @@ def Clean(id,  remove = "True"):
     w.ftp.quit()
 
 
-def CleanDirs():
+def CleanDirs(remove="True"):
     sql = "select vm.id from volume join vm on vm.id=volume.vm where volume.hostnode=\'%s\' and volume.pool is not NULL and volume.vm not in (%s);" % (
         NodeID, NoBackupID)
     Servs = Mysqlget(sql)
@@ -272,8 +272,11 @@ def CleanDirs():
         ListDirs = w.List()
         Res = set(ListDirs) - Sset
         for dir in Res:
-            print "Remove a directory %s" % (dir)
-            w.FtpRmT(dir)
+            if remove == "True":
+                print "Remove a directory %s" % (dir)
+                w.FtpRmT(dir)
+            else:
+                print "Old or excess directory %s" % (dir)
     except:
         from colorama import Fore
         print (Fore.RED + "\nError !!!" + Fore.RESET +
@@ -453,6 +456,8 @@ def Main():
             chftp()
         elif sys.argv[1] == "clean":
             CleanDirs()
+        elif sys.argv[1] == "ftpold":
+            CleanDirs(remove="False")
         elif sys.argv[1] == "chfull":
             Check()
             chlvm()
