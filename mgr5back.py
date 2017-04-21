@@ -104,7 +104,7 @@ def StartBackup(ServerID):
     Serv = Mysqlget(sql)
     if not Serv:
         print "Virtual machine does not exist"
-        return None 
+        return
     print "Start backup: " + Serv[0][1]
     print "Start sync"
     cmd = "virsh send-key %s KEY_LEFTALT KEY_SYSRQ KEY_S" % (Serv[0][1])
@@ -200,10 +200,9 @@ class workftp():
             Error()
         self.ftp.quit()
 
-    def List(self):
-        files = self.ftp.nlst()
-        return files
-
+    def FtpDel(self):
+        Fpath = "~/" + NodeID
+        self.ftp.cwd(Fpath)
     def FtpRmT(self, path):
         Fpath = "~/" + NodeID
         self.ftp.cwd(Fpath)
@@ -211,8 +210,7 @@ class workftp():
         # print wd
         try:
             names = self.ftp.nlst(path)
-        except ftplib.all_errors as e:
-            print e
+        except ftplib.all_errors:
             return
         for name in names:
             if os.path.split(name)[1] in ('.', '..'):
@@ -288,7 +286,6 @@ def CleanDirs(remove="True"):
 
 def ftpdel(path):
     w = workftp()
-    w.ftp.cwd(NodeID)
     print "Remove the directory %s" % (path)
     w.FtpRmT(path)
 
