@@ -226,8 +226,8 @@ class workftp():
                 self.ftp.delete(name)
         try:
             self.ftp.rmd(path)
-        except ftplib.all_errors as e:
-            print e
+        except ftplib.all_errors:
+            return
 
 
 def Clean(id):
@@ -290,7 +290,7 @@ def ftpdel(path):
     w = workftp()
     w.ftp.cwd(NodeID)
     print "Remove the directory %s" % (path)
-    w.RmFile(path)
+    w.FtpRmT(path)
 
 def chlvm():
     print "Start check the logical volumes"
