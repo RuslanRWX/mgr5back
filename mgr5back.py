@@ -204,10 +204,11 @@ class workftp():
         files = self.ftp.nlst()
         return files
 
-    def FtpRmT(self, path):
+    def FtpRmT(self, path,  Art="Dir"):
         Fpath = "~/" + NodeID
         self.ftp.cwd(Fpath)
-        wd = self.ftp.pwd()
+        if Atr == "Dir":
+            wd = self.ftp.pwd()
         # print wd
         try:
             names = self.ftp.nlst(path)
