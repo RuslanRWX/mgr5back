@@ -252,7 +252,7 @@ def Clean(id):
     w.ftp.quit()
 
 
-def CleanDirs(remove="True"):
+def CleanDirs(remove=True):
     sql = "select vm.id from volume join vm on vm.id=volume.vm where volume.hostnode=\'%s\' and volume.pool is not NULL and volume.vm not in (%s);" % (
         NodeID, NoBackupID)
     Servs = Mysqlget(sql)
@@ -271,7 +271,7 @@ def CleanDirs(remove="True"):
         ListDirs = w.List()
         Res = set(ListDirs) - Sset
         for dir in Res:
-            if remove == "True":
+            if remove:
                 print "Remove the directory %s" % (dir)
                 w.FtpRmT(dir)
             else:
@@ -461,7 +461,7 @@ def Main():
         elif sys.argv[1] == "clean":
             CleanDirs()
         elif sys.argv[1] == "ftpold":
-            CleanDirs(remove="False")
+            CleanDirs(remove=None)
         elif sys.argv[1] == "ftpdel":
             ftpdel(sys.argv[2])
         elif sys.argv[1] == "chfull":
