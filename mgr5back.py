@@ -367,7 +367,7 @@ def chftp():
 
 
 def listF():
-    print "vm storage #####################################################"
+    print " VM storage ".center(112, "#")
     sql = "select vm.id,volume.name,vm.ip, vm.mem, vm.vcpu, vm.vsize, volume.pool  from vm  join volume on volume.vm=vm.id and volume.pool is not NULL;"
     Servs = Mysqlget(sql)
     for R in Servs:
@@ -478,4 +478,3 @@ def Main():
 if __name__ == '__main__':
     Conf()
     Main()
-exit(0)
