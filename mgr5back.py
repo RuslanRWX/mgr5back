@@ -1,6 +1,6 @@
 #!/usr/bin/env python
 # Copyright (c) 2017 Ruslan Variushkin,  ruslan@host4.biz
-# Version 0.4.3
+# Version 0.4.4
 # mgr5back.py is an open-source software to backup virtual machines on the
 # ISP VMmanager version 5
 import sys
