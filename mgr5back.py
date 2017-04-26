@@ -425,7 +425,7 @@ def help():
     print "Help function: Basic Usage:\n "
     print "\tstart      - Start full backup"
     print "\tid         - Start backup only one VM, using by id number, example: ./mgr5backup.py id 15"
-    print "\tlist       - display the virtual machine list"
+    print "\tlist       - Display the virtual machine list"
     print "\tstatus     - Status of process"
     print "\tchftp      - Check data into your ftp server"
     print "\tchlvm      - Start check the logical volumes"
