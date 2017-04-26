@@ -468,7 +468,6 @@ def Main():
         elif sys.argv[1] == "ftpdel":
             ftpdel(sys.argv[2])
         elif sys.argv[1] == "chfull":
-            Check()
             chlvm()
             chftp()
             Chfull()
