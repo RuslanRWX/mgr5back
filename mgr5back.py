@@ -430,9 +430,9 @@ def help():
     print "\tchftp      - Check data into your ftp server"
     print "\tchlvm      - Start check the logical volumes"
     print "\tchfull     - Full check"
-    print "\tclean      - Remove old or excess directories in the Node ID directory of the ftp server"
     print "\tftpold     - Old or excess directories in the Node ID directory of the ftp server"
     print "\tftpdel     - Remove some file or directory on the FTP server"
+    print "\tclean      - Remove old or excess directories in the Node ID directory of the ftp server"
     print "\thelp       - Print help\n"
 
 
