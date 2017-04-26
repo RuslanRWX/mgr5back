@@ -422,18 +422,18 @@ def Error():
 
 
 def help():
-    print "Help function: Basic Usage:\n "
-    print "\tstart      - Start full backup"
-    print "\tid         - Start backup only one VM, using by id number, example: ./mgr5backup.py id 15"
-    print "\tlist       - Display the virtual machine list"
-    print "\tstatus     - Status of process"
-    print "\tchftp      - Check data into your ftp server"
-    print "\tchlvm      - Start check the logical volumes"
-    print "\tchfull     - Full check"
-    print "\tftpold     - Show old or excess directories in the Node ID directory of the ftp server"
-    print "\tftpdel     - Remove some file or directory on the FTP server"
-    print "\tclean      - Remove old or excess directories in the Node ID directory of the ftp server"
-    print "\thelp       - Print help\n"
+    return """Help function: Basic Usage:\n
+    \tstart      - Start full backup
+    \tid         - Start backup only one VM, using by id number, example: ./mgr5backup.py id 15
+    \tlist       - Display the virtual machine list
+    \tstatus     - Status of process
+    \tchftp      - Check data into your ftp server
+    \tchlvm      - Start check the logical volumes
+    \tchfull     - Full check
+    \tftpold     - Show old or excess directories in the Node ID directory of the ftp server
+    \tftpdel     - Remove some file or directory on the FTP server
+    \tclean      - Remove old or excess directories in the Node ID directory of the ftp server
+    \thelp       - Print help\n"""
 
 
 def Main():
@@ -472,9 +472,9 @@ def Main():
             chftp()
             Chfull()
         else:
-            help()
+          print help()
     except IndexError:
-        help()
+        print help()
 
 
 if __name__ == '__main__':
