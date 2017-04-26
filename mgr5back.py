@@ -1,6 +1,6 @@
 #!/usr/bin/env python
 # Copyright (c) 2017 Ruslan Variushkin,  ruslan@host4.biz
-# Version 0.4.4
+# Version 0.4.5
 # mgr5back.py is an open-source software to backup virtual machines on the
 # ISP VMmanager version 5
 import sys
@@ -442,6 +442,9 @@ def Main():
             Check()
             StartBackup(sys.argv[2])
             os.remove(pidfile)
+            ZF = open(Zabbix_Mark_File,  'w')
+            ZF.write("0")
+            ZF.close()
         elif sys.argv[1] == 'start':
             file=open(Zabbix_Error_File,  "w")
             file.write("0")
