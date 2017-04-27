@@ -437,7 +437,7 @@ def help():
     \tftpold     - Show old or excess directories in the Node ID directory of the ftp server
     \tftpdel     - Remove some file or directory on the FTP server
     \tclean      - Remove old or excess directories in the Node ID directory of the ftp server
-    \tcreat-zab  - Check for zabbix, create all zabbix marks
+    \tcreat-zab  - Create all zabbix marks
     \thelp       - Print help\n"""
 
 
