@@ -49,13 +49,13 @@ def Conf():
 
 def Check():
     if os.path.isfile(pidfile):
-        if  sys.argv[1] == 'chfull':
+        if  sys.argv[1] == "chfull":
             check.add("1")
         else:
             print "%s already exists, exiting" % pidfile
             sys.exit()
     else:
-        if sys.argv[1] == 'start' or 'id':
+        if sys.argv[1] == "start" or sys.argv[1] == "id":
             file(pidfile, 'w').write(pid) 
             file(Zabbix_Mark_File, "w").write("1")
 
@@ -420,6 +420,10 @@ def Error():
     os.remove(pidfile)
     Zabbix()
 
+def Error0():
+    file=open(Zabbix_Error_File,  "w")
+    file.write("0")
+    file.close()
 
 def help():
     return """Help function: Basic Usage:\n
@@ -433,6 +437,7 @@ def help():
     \tftpold     - Show old or excess directories in the Node ID directory of the ftp server
     \tftpdel     - Remove some file or directory on the FTP server
     \tclean      - Remove old or excess directories in the Node ID directory of the ftp server
+    \tcreat-zab  - Check for zabbix, create all zabbix marks
     \thelp       - Print help\n"""
 
 
@@ -446,9 +451,7 @@ def Main():
             ZF.write("0")
             ZF.close()
         elif sys.argv[1] == 'start':
-            file=open(Zabbix_Error_File,  "w")
-            file.write("0")
-            file.close()
+            Error0()
             Check()
             Search()
             os.remove(pidfile)
@@ -471,6 +474,10 @@ def Main():
             chlvm()
             chftp()
             Chfull()
+        elif sys.argv[1] == "creat-zab":
+            Error0()
+            Check()
+            Zabbix()
         else:
           print help()
     except IndexError:
