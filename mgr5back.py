@@ -263,6 +263,7 @@ def DateCheck(checkdate):
         
         
 def checkandrm(dir):
+    DateCh=DateCheck(checkdate_after_delete)
     w = workftp()
     try:
         w.ftp.cwd(NodeID+"/"+dir)
