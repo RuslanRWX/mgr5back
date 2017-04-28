@@ -30,6 +30,7 @@ def Conf():
     global Zabbix_LVM_File
     global Zabbix_FTP_File
     global Zabbix_Error_File
+    global ceckdate_after_delete
     NodeID = config['main']['NodeID']
     NoBackupID = config['main']['NoBackupID']
     ftp_conn = config['main']['ftp_conn']
@@ -46,6 +47,7 @@ def Conf():
     Zabbix_LVM_File = config['main']['ZabbixLVMFile']
     Zabbix_FTP_File = config['main']['ZabbixFTPFile']
     Zabbix_Error_File = config['main']['ZabbixErrorFile']
+    checkdate_after_delete = config['main']['CheckDateAfterDelete']
 
 def Check():
     if os.path.isfile(pidfile):
@@ -284,11 +286,44 @@ def CleanDirs(remove=True):
     else:
         print "Nothing have been cleaned"
         
+def DateCheck(checkdate):
+    date0 = datetime.datetime.now() - datetime.timedelta(days=checkdate)
+    date = date0.strftime("%Y-%m-%d")
+    date = date0.strftime("%Y%m%d")
+    dateCh = "%s000000" % (date)
+    return dateCh
+        
+        
 def checkandrm(dir):
     w = workftp()
-    w.ftp.cwd(NodeID)
-    f=w.List()
-    print f
+    try:
+        w.ftp.cwd(NodeID+"/"+dir)
+        ListDirs = w.List()
+        resultDir = filter(lambda x: DateCh <= x, ListDirs)
+        if resultDir != []:
+            print "good"
+        else:
+            print "Remove the directory %s" % (dir)
+            w.FtpRmT(dir)
+    except:
+        print "Not Dir, start remove"
+        w.FtpRmT(dir)
+        return
+       
+       
+    files=w.List()
+    if files == []:
+        print "Remove the directory %s" % (dir)
+        w.FtpRmT(dir)
+    else:
+        DateCh=DateCheck(checkdate_after_delete)
+        try:
+            ListDirs = w.List()
+            resultDir = filter(lambda x: DateCh <= x, ListDirs)
+        except:
+            print "Not Dir, start remove"
+            w.FtpRmT(dir)
+            
         
     #                print "Remove the directory %s" % (dir)
     #            w.FtpRmT(dir)
@@ -308,18 +343,15 @@ def chlvm():
         print "LVM Error"
         check.add("2")
 
-
+    
 def chftp():
     print "Start checking the ftp server\n"
-    date0 = datetime.datetime.now() - datetime.timedelta(days=checkdate)
-    date = date0.strftime("%Y-%m-%d")
+    dateCh = DateCheck(checkdate)
     # print date
     sql = "select vm.id, volume.name from volume join vm on vm.id=volume.vm where volume.hostnode=\'%s\' and volume.pool is not NULL and volume.vm not in (%s);" % (
         NodeID, NoBackupID)
     Servs = Mysqlget(sql)
     w = workftp()
-    date = date0.strftime("%Y%m%d")
-    dateCh = "%s000000" % (date)
     for R in Servs:
         resultDir = []
         resultDir0 = []
