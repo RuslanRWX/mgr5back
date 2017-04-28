@@ -252,7 +252,31 @@ def Clean(id):
             w.ftp.cwd("~/" + path)
             w.ftp.rmd(R)    # Delete old dir
     w.ftp.quit()
-
+    
+    
+def DateCheck(checkdate):
+    date0 = datetime.datetime.now() - datetime.timedelta(days=checkdate)
+    date = date0.strftime("%Y-%m-%d")
+    date = date0.strftime("%Y%m%d")
+    dateCh = "%s000000" % (date)
+    return dateCh
+        
+        
+def checkandrm(dir):
+    w = workftp()
+    try:
+        w.ftp.cwd(NodeID+"/"+dir)
+        ListDirs = w.List()
+        resultDir = filter(lambda x: DateCh <= x, ListDirs)
+        if resultDir != []:
+            print "good"
+        else:
+            print "Remove the directory %s" % (dir)
+            w.FtpRmT(dir)
+    except:
+        print "Not Dir, start remove"
+        w.FtpRmT(dir)
+        return
 
 def CleanDirs(remove=True):
     sql = "select vm.id from volume join vm on vm.id=volume.vm where volume.hostnode=\'%s\' and volume.pool is not NULL and volume.vm not in (%s);" % (
@@ -286,47 +310,6 @@ def CleanDirs(remove=True):
     else:
         print "Nothing have been cleaned"
         
-def DateCheck(checkdate):
-    date0 = datetime.datetime.now() - datetime.timedelta(days=checkdate)
-    date = date0.strftime("%Y-%m-%d")
-    date = date0.strftime("%Y%m%d")
-    dateCh = "%s000000" % (date)
-    return dateCh
-        
-        
-def checkandrm(dir):
-    w = workftp()
-    try:
-        w.ftp.cwd(NodeID+"/"+dir)
-        ListDirs = w.List()
-        resultDir = filter(lambda x: DateCh <= x, ListDirs)
-        if resultDir != []:
-            print "good"
-        else:
-            print "Remove the directory %s" % (dir)
-            w.FtpRmT(dir)
-    except:
-        print "Not Dir, start remove"
-        w.FtpRmT(dir)
-        return
-       
-       
-    files=w.List()
-    if files == []:
-        print "Remove the directory %s" % (dir)
-        w.FtpRmT(dir)
-    else:
-        DateCh=DateCheck(checkdate_after_delete)
-        try:
-            ListDirs = w.List()
-            resultDir = filter(lambda x: DateCh <= x, ListDirs)
-        except:
-            print "Not Dir, start remove"
-            w.FtpRmT(dir)
-            
-        
-    #                print "Remove the directory %s" % (dir)
-    #            w.FtpRmT(dir)
 
 def ftpdel(path):
     w = workftp()
