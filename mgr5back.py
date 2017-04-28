@@ -272,8 +272,7 @@ def CleanDirs(remove=True):
         Res = set(ListDirs) - Sset
         for dir in Res:
             if remove:
-                print "Remove the directory %s" % (dir)
-                w.FtpRmT(dir)
+                checkandrm(dir)
             else:
                 print "\nOld or excess file or directory %s\n" % (dir)
     except:
@@ -284,6 +283,14 @@ def CleanDirs(remove=True):
         print "Old or excess data have been cleaned on the FTP server,bye!"
     else:
         print "Nothing have been cleaned"
+        
+def checkandrm(dir):
+    w = workftp()
+    f=w.List()
+    print f
+        
+    #                print "Remove the directory %s" % (dir)
+    #            w.FtpRmT(dir)
 
 def ftpdel(path):
     w = workftp()
