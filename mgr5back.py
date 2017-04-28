@@ -437,7 +437,7 @@ def help():
     \tftpold     - Show old or excess directories in the Node ID directory of the ftp server
     \tftpdel     - Remove some file or directory on the FTP server
     \tclean      - Remove old or excess directories in the Node ID directory of the ftp server
-    \tcreate-zab - Create all zabbix marks
+    \tzabbix-marks - Create all zabbix marks
     \thelp       - Print help\n"""
 
 
@@ -474,7 +474,7 @@ def Main():
             chlvm()
             chftp()
             Chfull()
-        elif sys.argv[1] == "create-zab":
+        elif sys.argv[1] == "zabbix-marks":
             Error0()
             Check()
             Zabbix()
