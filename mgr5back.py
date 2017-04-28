@@ -286,6 +286,7 @@ def CleanDirs(remove=True):
         
 def checkandrm(dir):
     w = workftp()
+    w.ftp.cwd(NodeID)
     f=w.List()
     print f
         
