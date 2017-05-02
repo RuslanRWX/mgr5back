@@ -23,6 +23,7 @@ def Conf():
     global BackDir
     global FileDB
     global Gzip
+    global RunClean
     global SaveDate
     global checkdate
     global check
@@ -38,6 +39,9 @@ def Conf():
     BackDir = config['main']['BackDir']
     FileDB = config['main']['FileDB']
     Gzip = config['main']['Gzip']
+    Gzip = Gzip.upper()
+    RunClean = config['main']['RunClean']
+    RunClean = RunClean.upper()
     SaveDate = config['main']['SaveDate']
     SaveDate = int(SaveDate)
     checkdate = config['main']['checkdate']
@@ -120,11 +124,11 @@ def StartBackup(ServerID):
         W.CreateLVM(R[3])
     for R in Serv:
         W = work(R[0], R[1], R[2], date)
-        if Gzip.lower() == 'yes':
+        if Gzip == 'YES':
             W.CreateGzip()
         W.PutFtp()
         W.RemoveLVM()
-        if Gzip.lower() == 'yes':
+        if Gzip == 'YES':
             W.RmFile()
         Clean(R[0])
 
@@ -139,7 +143,7 @@ class work:
         self.filez = BackDir + "/" + Name + "_" + date
         self.NameImgFtp = Name + "_" + date
         self.dftp = self.Name + "/" + date
-        if Gzip.lower() == 'yes':
+        if Gzip == 'YES':
             self.filez = BackDir + "/" + Name + "_" + date
         else:
             self.filez = self.PoolName
@@ -270,8 +274,7 @@ def checkandrm(dir):
         ListDirs = w.List()
         resultDir = filter(lambda x: DateCh <= x, ListDirs)
         if resultDir != []:
-            #print "Date is ok"
-            pass
+            print  "Check date after delete is OK"
         else:
             print "Remove the directory %s" % (dir)
             w.FtpRmT(dir)
@@ -281,8 +284,6 @@ def checkandrm(dir):
         return
 
 def CleanDirs(remove=True):
-    DateCh=DateCheck(checkdate_after_delete)
-    print DateCh
     sql = "select vm.id from volume join vm on vm.id=volume.vm where volume.hostnode=\'%s\' and volume.pool is not NULL and volume.vm not in (%s);" % (
         NodeID, NoBackupID)
     Servs = Mysqlget(sql)
@@ -480,6 +481,8 @@ def Main():
             Error0()
             Check()
             Search()
+            if RunClean == "YES":
+                Clean()
             os.remove(pidfile)
             Zabbix()
         elif sys.argv[1] == 'chlvm':
