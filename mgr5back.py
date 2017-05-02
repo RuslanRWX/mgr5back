@@ -304,6 +304,7 @@ def CleanDirs(remove=True):
                 try:
                     w.ftp.cwd(dir)
                     ListDirs = w.List()
+                    DateCh=DateCheck(checkdate_after_delete)
                     resultDir = filter(lambda x: DateCh <= x, ListDirs)
                     if resultDir != []:
                         print "good"
