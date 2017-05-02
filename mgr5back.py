@@ -299,7 +299,8 @@ def CleanDirs(remove=True):
         Res = set(ListDirs) - Sset
         for dir in Res:
             if remove:
-                checkandrm(dir)
+                #checkandrm(dir)
+                print dir 
             else:
                 print "\nOld or excess file or directory %s\n" % (dir)
     except:
