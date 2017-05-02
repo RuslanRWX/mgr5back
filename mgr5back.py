@@ -300,7 +300,20 @@ def CleanDirs(remove=True):
         for dir in Res:
             if remove:
                 #checkandrm(dir)
-                print dir 
+                print dir
+                try:
+                    w.ftp.cwd(dir)
+                    ListDirs = w.List()
+                    resultDir = filter(lambda x: DateCh <= x, ListDirs)
+                    if resultDir != []:
+                        print "good"
+                    else:
+                        print "Remove the directory %s" % (dir)
+                        #w.FtpRmT(dir)
+                except:
+                    print "Not Dir, start remove"
+                    print dir
+                    #w.FtpRmT(dir)
             else:
                 print "\nOld or excess file or directory %s\n" % (dir)
     except:
