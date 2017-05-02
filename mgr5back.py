@@ -290,7 +290,7 @@ def CleanDirs(remove=True):
     w = workftp()
     Sset = set()
     Lset = set()
-    if remove == "True":
+    if remove:
         doing = "remove"
     else:
         doing = "search"
@@ -315,7 +315,7 @@ def CleanDirs(remove=True):
         from colorama import Fore
         print (Fore.RED + "\nError !!!" + Fore.RESET +
                " You have an error on the ftp server. Check directory name as the node id#%s,permissions etc") % (NodeID)
-    if Res and remove == "True":
+    if Res and remove:
         print "Old or excess data have been cleaned on the FTP server,bye!"
     else:
         print "Nothing have been cleaned"
