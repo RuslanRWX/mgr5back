@@ -276,7 +276,7 @@ def checkandrm(dir):
         if resultDir != []:
             print  "Check date after delete is OK"
         else:
-            print "Remove the directory %s" % (dir)
+            print "Remove the directory "+dir
             w.FtpRmT(dir)
     except:
         print "Not Dir, start remove"
@@ -290,7 +290,11 @@ def CleanDirs(remove=True):
     w = workftp()
     Sset = set()
     Lset = set()
-    print "Start remove old or excess directories in the Node ID directory of the ftp server"
+    if remove == "True":
+        doing = "remove"
+    else:
+        doing = "search"
+    print "Start "+doing+" old or excess directories in the Node ID directory of the ftp server"
     for S in Servs:
         import string
         S = str(S).replace("(", "")
@@ -305,6 +309,8 @@ def CleanDirs(remove=True):
             if remove:
                 print "Start check ", dir
                 checkandrm(dir)
+            else: 
+                print "Old or excess file or directory",  dir
     except:
         from colorama import Fore
         print (Fore.RED + "\nError !!!" + Fore.RESET +
