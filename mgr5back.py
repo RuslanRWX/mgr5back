@@ -48,6 +48,7 @@ def Conf():
     Zabbix_FTP_File = config['main']['ZabbixFTPFile']
     Zabbix_Error_File = config['main']['ZabbixErrorFile']
     checkdate_after_delete = config['main']['CheckDateAfterDelete']
+    checkdate_after_delete = int(checkdate_after_delete)
 
 def Check():
     if os.path.isfile(pidfile):
@@ -256,7 +257,6 @@ def Clean(id):
     
 def DateCheck(checkdate):
     date0 = datetime.datetime.now() - datetime.timedelta(days=checkdate)
-    date = date0.strftime("%Y-%m-%d")
     date = date0.strftime("%Y%m%d")
     dateCh = "%s000000" % (date)
     return dateCh
@@ -270,16 +270,19 @@ def checkandrm(dir):
         ListDirs = w.List()
         resultDir = filter(lambda x: DateCh <= x, ListDirs)
         if resultDir != []:
-            print "good"
+            #print "Date is ok"
+            pass
         else:
             print "Remove the directory %s" % (dir)
-            #w.FtpRmT(dir)
+            w.FtpRmT(dir)
     except:
         print "Not Dir, start remove"
-        #w.FtpRmT(dir)
+        w.FtpRmT(dir)
         return
 
 def CleanDirs(remove=True):
+    DateCh=DateCheck(checkdate_after_delete)
+    print DateCh
     sql = "select vm.id from volume join vm on vm.id=volume.vm where volume.hostnode=\'%s\' and volume.pool is not NULL and volume.vm not in (%s);" % (
         NodeID, NoBackupID)
     Servs = Mysqlget(sql)
@@ -299,8 +302,8 @@ def CleanDirs(remove=True):
         Res = set(ListDirs) - Sset
         for dir in Res:
             if remove:
+                print "Start check ", dir
                 checkandrm(dir)
-                #print ""+ dir
     except:
         from colorama import Fore
         print (Fore.RED + "\nError !!!" + Fore.RESET +
