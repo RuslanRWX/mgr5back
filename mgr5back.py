@@ -274,12 +274,12 @@ def checkandrm(dir):
         ListDirs = w.List()
         resultDir = filter(lambda x: DateCh <= x, ListDirs)
         if resultDir != []:
-            print  "Check date after delete is OK"
+            print  "Check date after delete of the directory "+dir+" is OK"
         else:
             print "Remove the directory "+dir
             w.FtpRmT(dir)
     except:
-        print "Not Dir, start remove"
+        print "Not Directory, start remove "+dir
         w.FtpRmT(dir)
         return
 
