@@ -30,7 +30,7 @@ def Conf():
     global Zabbix_LVM_File
     global Zabbix_FTP_File
     global Zabbix_Error_File
-    global ceckdate_after_delete
+    global checkdate_after_delete
     NodeID = config['main']['NodeID']
     NoBackupID = config['main']['NoBackupID']
     ftp_conn = config['main']['ftp_conn']
@@ -273,10 +273,10 @@ def checkandrm(dir):
             print "good"
         else:
             print "Remove the directory %s" % (dir)
-            w.FtpRmT(dir)
+            #w.FtpRmT(dir)
     except:
         print "Not Dir, start remove"
-        w.FtpRmT(dir)
+        #w.FtpRmT(dir)
         return
 
 def CleanDirs(remove=True):
@@ -299,24 +299,8 @@ def CleanDirs(remove=True):
         Res = set(ListDirs) - Sset
         for dir in Res:
             if remove:
-                #checkandrm(dir)
-                print dir
-                try:
-                    w.ftp.cwd(dir)
-                    ListDirs = w.List()
-                    DateCh=DateCheck(checkdate_after_delete)
-                    resultDir = filter(lambda x: DateCh <= x, ListDirs)
-                    if resultDir != []:
-                        print "good"
-                    else:
-                        print "Remove the directory %s" % (dir)
-                        #w.FtpRmT(dir)
-                except:
-                    print "Not Dir, start remove"
-                    print dir
-                    #w.FtpRmT(dir)
-            else:
-                print "\nOld or excess file or directory %s\n" % (dir)
+                checkandrm(dir)
+                #print ""+ dir
     except:
         from colorama import Fore
         print (Fore.RED + "\nError !!!" + Fore.RESET +
