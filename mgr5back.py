@@ -426,6 +426,7 @@ def Chfull():
         print "FTP Server ERROR"
 
 def Zabbix():
+    print "Start zabbix check"
     chlvm()
     chftp()
     ZF = open(Zabbix_Mark_File,  'w')
@@ -488,9 +489,9 @@ def Main():
             Check()
             Search()
             if RunClean == "YES":
-                Clean()
-            os.remove(pidfile)
+                CleanDirs()
             Zabbix()
+            os.remove(pidfile)
         elif sys.argv[1] == 'chlvm':
             chlvm()
         elif sys.argv[1] == 'list':
