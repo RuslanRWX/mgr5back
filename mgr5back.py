@@ -235,6 +235,11 @@ class workftp():
         except ftplib.all_errors:
             return
 
+def DateCheck(checkdate):
+    date0 = datetime.datetime.now() - datetime.timedelta(days=checkdate)
+    date = date0.strftime("%Y%m%d")
+    dateCh = "%s000000" % (date)
+    return dateCh
 
 def Clean(id):
     print "Start clean ftp server, older then:", SaveDate, "days"
@@ -242,9 +247,7 @@ def Clean(id):
     path = NodeID + "/%s/" % (id)
     w.ftp.cwd(path)
     ListDirs = w.List()
-    import datetime
-    date = datetime.datetime.now() - datetime.timedelta(days=SaveDate)
-    date2 = date.strftime("%Y%m%d000000")
+    date2 = DateCheck(SaveDate)
     print "Check date: " + date2
     for R in ListDirs:
         if date2 > R:
@@ -257,13 +260,6 @@ def Clean(id):
             w.ftp.cwd("~/" + path)
             w.ftp.rmd(R)    # Delete old dir
     w.ftp.quit()
-    
-    
-def DateCheck(checkdate):
-    date0 = datetime.datetime.now() - datetime.timedelta(days=checkdate)
-    date = date0.strftime("%Y%m%d")
-    dateCh = "%s000000" % (date)
-    return dateCh
         
         
 def checkandrm(dir):
