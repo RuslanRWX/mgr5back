@@ -142,7 +142,7 @@ pip install colorama
 <br>14. zabbix-marks - Create all zabbix marks  
 <br>14.1 Можно запускать при стартовой установке или после дебага ошибки, в противном случаи в заббиксе
 <br>будет висеть ошибка до следующего запуска бекапа. 
-<br>Восстановление 
+<br<br<>Восстановление 
 <br>Заходим на бекап сервер 
 <br>1.1 Смотрим куда бекапится:
 <br>   grep name `grep ftp_conn /root/scripts/mgr5back/config.ini | awk '{print $2}'`
