@@ -129,20 +129,19 @@ pip install colorama
 <br>Error !!! You have an error on the ftp server. Check directory name as the node id#2,permissions etc
 <br>FTP server have cleaned,bye! 
 <br>FTP server have cleaned,bye!
-
 <br>12. ftpold  - отобразит старые или лишние файлы и папки на фтп-сервере (в отношении к Ноде)
 <br>пример: ./mgr5back.py ftpold
 <br>Start remove old or excess directories in the Node ID directory of the ftp server
 <br>Old or excess file or directory 999
 <br>Old or excess file or directory 161
-
 <br>13.  ftpdel     - удалить папку или файл на фтп сервере вручную
 <br>пример: ./mgr5back.py ftpdel 999
 <br>Remove the directory 999
+
 <br>14. zabbix-marks - Create all zabbix marks  
 <br>14.1 Можно запускать при стартовой установке или после дебага ошибки, в противном случаи в заббиксе
 <br>будет висеть ошибка до следующего запуска бекапа. 
-<br<br>Восстановление 
+<br><br>Восстановление 
 <br>Заходим на бекап сервер 
 <br>1.1 Смотрим куда бекапится:
 <br>   grep name `grep ftp_conn /root/scripts/mgr5back/config.ini | awk '{print $2}'`
