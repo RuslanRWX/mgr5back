@@ -90,9 +90,11 @@ pip install colorama
 <br>6.1 ./mgr5back.py start   – запустит полный бекап всех виртуальных машин кроме  NoBackupID 
 <br>6.2 ./mgr5back.py id  151  – запуск бекапа виртуальной машины с id 151
 <br>Вывод всех виртуальных машин 
+
 <br>7.1 ./mgr5back.py list 
 <br>Статус 
 <br>8.1 ./mgr5back.py status  – вывод статуса программки
+
 <br>Проверка бекапов 
 <br>9.1 Проверка LVM
 <br>9.1.1  ./mgr5back.py chlvm   – проверит ошибки на уровни LVM 
@@ -114,6 +116,7 @@ pip install colorama
 
 <br>тут происходит проверка на наличия папок и файлов на стороне ftp сервера.
 <br>  ./mgr5back.py chfull  – объединяет проверку chlvm и chftp 
+
 <br>Удаление лишних файлов и папок на бекап сервере. 
 <br>11.1  ./mgr5back.py clean 
 <br>11.1.a Вывод при удаление, на бекап сервере лишней или старой директории бекапа VM c ID 600 
@@ -128,12 +131,13 @@ pip install colorama
 <br>Remove a directory 600
 <br>Error !!! You have an error on the ftp server. Check directory name as the node id#2,permissions etc
 <br>FTP server have cleaned,bye! 
-<br>FTP server have cleaned,bye!
+
 <br>12. ftpold  - отобразит старые или лишние файлы и папки на фтп-сервере (в отношении к Ноде)
 <br>пример: ./mgr5back.py ftpold
 <br>Start remove old or excess directories in the Node ID directory of the ftp server
 <br>Old or excess file or directory 999
 <br>Old or excess file or directory 161
+
 <br>13.  ftpdel     - удалить папку или файл на фтп сервере вручную
 <br>пример: ./mgr5back.py ftpdel 999
 <br>Remove the directory 999
@@ -141,10 +145,12 @@ pip install colorama
 <br>14. zabbix-marks - Create all zabbix marks  
 <br>14.1 Можно запускать при стартовой установке или после дебага ошибки, в противном случаи в заббиксе
 <br>будет висеть ошибка до следующего запуска бекапа. 
+
+
 <br><br>Восстановление 
 <br>Заходим на бекап сервер 
 <br>1.1 Смотрим куда бекапится:
-<br>   grep name `grep ftp_conn /root/scripts/mgr5back/config.ini | awk '{print $2}'`
+<br> grep name `grep ftp_conn /root/scripts/mgr5back/config.ini | awk '{print $2}'`
 <br>1.2 На бекап сервере: cd number_of_node/vm-id/date
 <br>example: cd /2/229/20170611191737
 <br>Разархивировать 
