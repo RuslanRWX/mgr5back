@@ -31,8 +31,8 @@ pip install colorama
 <br>
 # Add Jobs To cron
 
-0 23  *  * *   root /root/scripts/mgr5back/mgr5back.py start >> /var/log/mgr5back.log 2>1&
-<br>0 0  1  * *   root /root/scripts/mgr5back/mgr5back.py clean >> /var/log/mgr5back.clean.log 2>1&
+0 23  *  * *   root /root/scripts/mgr5back/mgr5back.py start >> /var/log/mgr5back.log 2>&1
+<br>0 0  1  * *   root /root/scripts/mgr5back/mgr5back.py clean >> /var/log/mgr5back.clean.log 2>&1
 
 
 <br>2.1 cd mgr5backup; ls -al 
