@@ -23,17 +23,18 @@ pip install configparser
 pip install colorama
 
 
+##########
+
+# Развертывание 
+<br>git clone https://github.com/ruslansvs2/mgr5back.git
+<br>Описание содержимого в каталоге 
+<br>
 # Add Jobs To cron
 
 0 23  *  * *   root /root/scripts/mgr5back/mgr5back.py start >> /var/log/mgr5back.log 2>1&
-0 0  1  * *   root /root/scripts/mgr5back/mgr5back.py clean >> /var/log/mgr5back.clean.log 2>1&
+<br>0 0  1  * *   root /root/scripts/mgr5back/mgr5back.py clean >> /var/log/mgr5back.clean.log 2>1&
 
 
-##########
-
-Развертывание 
-<br>git clone https://github.com/ruslansvs2/mgr5back.git
-<br>Описание содержимого в каталоге 
 <br>2.1 cd mgr5backup; ls -al 
 <br>2.2 файлы
       config.ini  - конфигурационный файл 
