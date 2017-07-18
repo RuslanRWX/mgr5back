@@ -11,7 +11,10 @@ apt-get update && apt-get install python-pip
 
 #then install additional modules
 
-pip install mysql-connector
+pip install mysql-connector  
+or
+centos: yum install mysql-connector-python
+debian: apt-get install python-mysql.connector
 
 pip install xmltodict 
 
