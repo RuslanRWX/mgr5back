@@ -1,6 +1,6 @@
 #!/usr/bin/env python
 # Copyright (c) 2017 Ruslan Variushkin,  ruslan@host4.biz
-# Version 0.4.6
+# Version 0.4.7
 # mgr5back.py is an open-source software to backup virtual machines on the
 # ISP VMmanager version 5
 import sys
@@ -37,6 +37,10 @@ def Conf():
     ftp_conn = config['main']['ftp_conn']
     pidfile = config['main']['pidfile']
     BackDir = config['main']['BackDir']
+    try:
+        os.stat(BackDir)
+    except:
+        os.mkdir(BackDir)
     FileDB = config['main']['FileDB']
     Gzip = config['main']['Gzip']
     Gzip = Gzip.upper()
