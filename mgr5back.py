@@ -356,7 +356,11 @@ def chftp():
         # print path
         w.ftp.cwd("~/")
         try:
-            w.ftp.cwd(path)
+            try:
+                w.ftp.cwd(path)
+            except:
+                print "Not directory NodeID on the backup sever"
+                return
             ListDirs = w.List()
             resultDir = filter(lambda x: dateCh <= x, ListDirs)
             if resultDir != []:
