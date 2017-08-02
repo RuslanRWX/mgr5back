@@ -51,8 +51,8 @@ pip install colorama
 <br>#ID vmmanager of your node
 <br>NodeID: 2
 <br>#exclude the virtual machines which should not be backup.
-<br># example NoBackupID='51,12' - ids are separeted by commas.
-<br>NoBackupID: 167,173
+<br># example NoBackupID='51,12' - ids are separeted by commas. 0 - all virtual machines to backup 
+<br>NoBackupID: 0
 <br># Connect to ftp server via the vmmgr-backup storage.
 <br>ftp_conn: /usr/local/mgr5/etc/.vmmgr-backup/storages/st_3
 <br># Pidfile
