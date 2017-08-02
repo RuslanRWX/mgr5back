@@ -401,7 +401,7 @@ def chftp():
 
 def listF():
     print " VM storage ".center(112, "#")
-    sql = "select vm.id,volume.name,vm.ip, vm.mem, vm.vcpu, vm.vsize, volume.pool  from vm  join volume on volume.vm=vm.id and volume.pool is not NULL;"
+    sql = "select vm.id,volume.name,vm.ip, vm.mem, vm.vcpu, vm.vsize, volume.pool  from vm  join volume on volume.vm=vm.id and volume.pool is not NULL and volume.hostnode="+NodeID+";"
     Servs = Mysqlget(sql)
     for R in Servs:
         print "VM ID: ", R[0], " Name Store:", R[1], " IP:", R[2], " Memory:", R[3], "M CPU:", R[4], " VSize:", R[5], "M Pool Name: ", R[6]
