@@ -1,6 +1,6 @@
 #!/usr/bin/env python
 # Copyright (c) 2017 Ruslan Variushkin,  ruslan@host4.biz
-# Version 0.4.7
+# Version 0.4.8
 # mgr5back.py is an open-source software to backup virtual machines on the
 # ISP VMmanager version 5
 import sys
@@ -405,7 +405,7 @@ def chftp():
 
 def listF():
     print " VM storage ".center(112, "#")
-    sql = "select vm.id,volume.name,vm.ip, vm.mem, vm.vcpu, vm.vsize, volume.pool  from vm  join volume on volume.vm=vm.id and volume.pool is not NULL and volume.hostnode="+NodeID+";"
+    sql = "select vm.id,volume.name,vm.ip, vm.mem, vm.vcpu, volume.size, volume.pool  from vm  join volume on volume.vm=vm.id and volume.pool is not NULL and volume.hostnode="+NodeID+";"
     Servs = Mysqlget(sql)
     for R in Servs:
         print "VM ID: ", R[0], " Name Store:", R[1], " IP:", R[2], " Memory:", R[3], "M CPU:", R[4], " VSize:", R[5], "M Pool Name: ", R[6]
