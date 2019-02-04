@@ -1,4 +1,4 @@
-#!/usr/bin/env python
+#!/usr/bin/env python3
 # Copyright (c) 2017 Ruslan Variushkin,  ruslan@host4.biz
 # Version 0.4.8
 # mgr5back.py is an open-source software to backup virtual machines on the
@@ -63,7 +63,7 @@ def Check():
         if  sys.argv[1] == "chfull":
             check.add("1")
         else:
-            print "%s already exists, exiting" % pidfile
+            print("%s already exists, exiting" % pidfile)
             sys.exit()
     else:
         if sys.argv[1] == "start" or sys.argv[1] == "id":
@@ -109,15 +109,16 @@ def Search():
 
 def StartBackup(ServerID):
     date = datetime.datetime.now().strftime("%Y%m%d%H%M%S")
-    print "Start backup-VM ID %s "% (ServerID)
+    print (f'Start time: {datetime.datetime.now()}')
+    print("Start backup-VM ID %s "% (ServerID))
     sql = "select vm,name,pool,size from volume where vm=\'%s\' and hostnode=\'%s\' and pool is not NULL;" % (
         ServerID, NodeID)
     Serv = Mysqlget(sql)
     if not Serv:
-        print "Virtual machine does not exist"
+        print("Virtual machine does not exist")
         return
-    print "Start backup: " + Serv[0][1]
-    print "Start sync"
+    print("Start backup: " + Serv[0][1])
+    print("Start sync")
     cmd = "virsh send-key %s KEY_LEFTALT KEY_SYSRQ KEY_S" % (Serv[0][1])
     import time
     time.sleep(3)
@@ -129,12 +130,17 @@ def StartBackup(ServerID):
     for R in Serv:
         W = work(R[0], R[1], R[2], date)
         if Gzip == 'YES':
+            print (f'Create Gzip: {datetime.datetime.now()}')
             W.CreateGzip()
+        print (f'Put file to FTP: {datetime.datetime.now()}')
         W.PutFtp()
+        print (f'Backup file has Loaded to FTP: {datetime.datetime.now()}')
         W.RemoveLVM()
         if Gzip == 'YES':
             W.RmFile()
+        print (f'Start cleaning FTP server: {datetime.datetime.now()}')
         Clean(R[0])
+        print (f'Cleaning has ended: {datetime.datetime.now()}')
 
 
 class work:
@@ -153,23 +159,23 @@ class work:
             self.filez = self.PoolName
 
     def CreateLVM(self, Size):
-        print "Start creating LVM Snapshote " + self.Name
+        print("Start creating LVM Snapshote " + self.Name)
         cmd = "lvcreate -L%sM -s -n %s-snapshot %s" % (
             Size, self.Name, self.PoolName)
         os.system(cmd)
 
     def RemoveLVM(self):
-        print "Remove LVM Snapshote " + self.PoolName
+        print("Remove LVM Snapshote " + self.PoolName)
         cmd = "lvremove -f %s-snapshot" % (self.PoolName)
         os.system(cmd)
 
     def RmFile(self):
-        print "Remove file or directory:" + self.filez
+        print("Remove file or directory:" + self.filez)
         cmd = "rm %s" % (self.filez)
         os.system(cmd)
 
     def CreateGzip(self):
-        print "Create gzip file, pool: " + self.Pool + " backup file: " + self.filez
+        print("Create gzip file, pool: " + self.Pool + " backup file: " + self.filez)
         cmdDD = "dd if=%s-snapshot | gzip -c > %s " % (
             self.PoolName, self.filez)
         os.system(cmdDD)  # start dd
@@ -181,7 +187,7 @@ class work:
         w.Path(NodeID)
         w.Path(self.id)
         w.Path(self.date)
-        print "Upload to " + DIR
+        print("Upload to " + DIR)
         w.Put(self.NameImgFtp, self.filez)
 
 
@@ -246,21 +252,21 @@ def DateCheck(checkdate):
     return dateCh
 
 def Clean(id):
-    print "Start clean ftp server, older then:", SaveDate, "days"
+    print("Start clean ftp server, older then:", SaveDate, "days")
     w = workftp()
     path = NodeID + "/%s/" % (id)
     w.ftp.cwd(path)
     ListDirs = w.List()
     date2 = DateCheck(SaveDate)
-    print "Check date: " + date2
+    print("Check date: " + date2)
     for R in ListDirs:
         if date2 > R:
             w.ftp.cwd(R)
             ListFile = w.List()
             for F in ListFile:
-                print "Delete file:" + F
+                print("Delete file:" + F)
                 w.ftp.delete(F)
-            print "Detele Dir: " + R
+            print("Detele Dir: " + R)
             w.ftp.cwd("~/" + path)
             w.ftp.rmd(R)    # Delete old dir
     w.ftp.quit()
@@ -272,14 +278,14 @@ def checkandrm(dir):
     try:
         w.ftp.cwd(NodeID+"/"+dir)
         ListDirs = w.List()
-        resultDir = filter(lambda x: DateCh <= x, ListDirs)
+        resultDir = [x for x in ListDirs if DateCh <= x]
         if resultDir != []:
-            print  "Check date after delete of the directory "+dir+" is OK"
+            print("Check date after delete of the directory "+dir+" is OK")
         else:
-            print "Remove the directory "+dir
+            print("Remove the directory "+dir)
             w.FtpRmT(dir)
     except:
-        print "Not Directory, start remove "+dir
+        print("Not Directory, start remove "+dir)
         w.FtpRmT(dir)
         return
 
@@ -294,7 +300,7 @@ def CleanDirs(remove=True):
         doing = "remove"
     else:
         doing = "search"
-    print "Start "+doing+" old or excess directories in the Node ID directory of the ftp server"
+    print("Start "+doing+" old or excess directories in the Node ID directory of the ftp server")
     for S in Servs:
         import string
         S = str(S).replace("(", "")
@@ -307,38 +313,38 @@ def CleanDirs(remove=True):
         Res = set(ListDirs) - Sset
         for dir in Res:
             if remove:
-                print "Start check ", dir
+                print("Start check ", dir)
                 checkandrm(dir)
             else: 
-                print "Old or excess file or directory",  dir
+                print("Old or excess file or directory",  dir)
     except:
         from colorama import Fore
-        print (Fore.RED + "\nError !!!" + Fore.RESET +
-               " You have an error on the ftp server. Check directory name as the node id#%s,permissions etc") % (NodeID)
+        print((Fore.RED + "\nError !!!" + Fore.RESET +
+               " You have an error on the ftp server. Check directory name as the node id#%s,permissions etc") % (NodeID))
     if Res and remove:
-        print "Old or excess data have been cleaned on the FTP server,bye!"
+        print("Old or excess data have been cleaned on the FTP server,bye!")
     else:
-        print "Nothing have been cleaned"
+        print("Nothing have been cleaned")
         
 
 def ftpdel(path):
     w = workftp()
-    print "Remove the directory %s" % (path)
+    print("Remove the directory %s" % (path))
     w.FtpRmT(path)
 
 def chlvm():
-    print "Start check the logical volumes"
+    print("Start check the logical volumes")
     cmd = "lvs | grep snapshot"
     Ch = os.system(cmd)
     if Ch:
-        print "LVM OK"
+        print("LVM OK")
     else:
-        print "LVM Error"
+        print("LVM Error")
         check.add("2")
 
     
 def chftp():
-    print "Start checking the ftp server\n"
+    print("Start checking the ftp server\n")
     dateCh = DateCheck(checkdate)
     # print date
     sql = "select vm.id, volume.name from volume join vm on vm.id=volume.vm where volume.hostnode=\'%s\' and volume.pool is not NULL and volume.vm not in (%s);" % (
@@ -359,10 +365,10 @@ def chftp():
             try:
                 w.ftp.cwd(path)
             except:
-                print "Not directory NodeID on the backup sever"
+                print("Not directory NodeID on the backup sever")
                 return
             ListDirs = w.List()
-            resultDir = filter(lambda x: dateCh <= x, ListDirs)
+            resultDir = [x for x in ListDirs if dateCh <= x]
             if resultDir != []:
                 for ts in resultDir:
                     file = "~/%s/%s/%s/" % (NodeID, R[0], ts)
@@ -370,7 +376,7 @@ def chftp():
                     ChF = "%s_%s" % (R[1], ts)
                     try:
                         FileR = w.List()
-                        if filter(lambda E: ChF == E,  FileR):
+                        if [E for E in FileR if ChF == E]:
                             # print "Check file %s is OK "%(ChF)
                             CheckFile = "0"
                         else:
@@ -380,57 +386,57 @@ def chftp():
         except:
             resultDir0 = "NonDir"
         from colorama import Fore
-        print (Fore.YELLOW + "Check the volume %s, the virtual machine ID %s" %
-               (R[1], R[0]) + Fore.RESET)
+        print((Fore.YELLOW + "Check the volume %s, the virtual machine ID %s" %
+               (R[1], R[0]) + Fore.RESET))
         if resultDir:
-            print "Check DIR %s is Ok" % (R[0])
+            print("Check DIR %s is Ok" % (R[0]))
             #CheckftpFiles(R[0], Dir, R[1])
             if CheckFile == "0":
-                print "Check a file %s is OK " % (ChF)
+                print("Check a file %s is OK " % (ChF))
             else:
-                print (Fore.RED + "Check a file %s is ERROR" %
-                       (ChF) + Fore.RESET)
+                print((Fore.RED + "Check a file %s is ERROR" %
+                       (ChF) + Fore.RESET))
                 check.add("3")
         elif resultDir0 == "NonDir":
-            print (Fore.RED + "The virtual machine ID %s, have not the directory name like %s, it's ERROR" %
-                   (R[0], R[0]) + Fore.RESET)
+            print((Fore.RED + "The virtual machine ID %s, have not the directory name like %s, it's ERROR" %
+                   (R[0], R[0]) + Fore.RESET))
             check.add("3")
         else:
-            print  (Fore.RED +"The virtual machine ID %s is Error. You have to check it." % (R[0])+ Fore.RESET)
+            print((Fore.RED +"The virtual machine ID %s is Error. You have to check it." % (R[0])+ Fore.RESET))
             check.add("3")
-        print "\n"
+        print("\n")
 
-    print "Check period of date %s" % (dateCh)
+    print("Check period of date %s" % (dateCh))
 
 
 def listF():
-    print " VM storage ".center(112, "#")
+    print(" VM storage ".center(112, "#"))
     sql = "select vm.id,volume.name,vm.ip, vm.mem, vm.vcpu, volume.size, volume.pool  from vm  join volume on volume.vm=vm.id and volume.pool is not NULL and volume.hostnode="+NodeID+";"
     Servs = Mysqlget(sql)
     for R in Servs:
-        print "VM ID: ", R[0], " Name Store:", R[1], " IP:", R[2], " Memory:", R[3], "M CPU:", R[4], " VSize:", R[5], "M Pool Name: ", R[6]
-    print "Note: not backup ID: ", NoBackupID
+        print("VM ID: ", R[0], " Name Store:", R[1], " IP:", R[2], " Memory:", R[3], "M CPU:", R[4], " VSize:", R[5], "M Pool Name: ", R[6])
+    print("Note: not backup ID: ", NoBackupID)
 
 
 def stat():
     if os.path.isfile(pidfile):
         pid = open(pidfile,  'r')
-        print "mgr5backup.py is running as pid %s" % pid.read()
+        print("mgr5backup.py is running as pid %s" % pid.read())
         pid.close()
     else:
-        print "mgr5backup.py is not running\n"
+        print("mgr5backup.py is not running\n")
 
 def Chfull():
     if "1" in check:
         pid = open(pidfile,  'r')
-        print "mgr5backup.py now is running as pid %s" % pid.read()
+        print("mgr5backup.py now is running as pid %s" % pid.read())
     if "2" in check:
-        print "LVM Error"
+        print("LVM Error")
     if "3" in check:
-        print "FTP Server ERROR"
+        print("FTP Server ERROR")
 
 def Zabbix():
-    print "Start zabbix check"
+    print("Start zabbix check")
     chlvm()
     chftp()
     ZF = open(Zabbix_Mark_File,  'w')
@@ -451,7 +457,7 @@ def Zabbix():
 
 
 def Error():
-    print "Error !"
+    print("Error !")
     file=open(Zabbix_Error_File,  "w")
     file.write("1")
     file.close()
@@ -519,9 +525,9 @@ def Main():
             Check()
             Zabbix()
         else:
-          print help()
+          print(help())
     except IndexError:
-        print help()
+        print(help())
 
 
 if __name__ == '__main__':
