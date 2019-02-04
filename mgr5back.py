@@ -109,7 +109,7 @@ def Search():
 
 def StartBackup(ServerID):
     date = datetime.datetime.now().strftime("%Y%m%d%H%M%S")
-    print (f'Start time: {datetime.datetime.now()}')
+    print ('Start time:'% (datetime.datetime.now()))
     print("Start backup-VM ID %s "% (ServerID))
     sql = "select vm,name,pool,size from volume where vm=\'%s\' and hostnode=\'%s\' and pool is not NULL;" % (
         ServerID, NodeID)
