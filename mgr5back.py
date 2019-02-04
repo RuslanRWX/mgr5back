@@ -1,4 +1,4 @@
-#!/usr/bin/env python3
+#!/usr/bin/env python
 # Copyright (c) 2017 Ruslan Variushkin,  ruslan@host4.biz
 # Version 0.4.8
 # mgr5back.py is an open-source software to backup virtual machines on the
@@ -130,17 +130,17 @@ def StartBackup(ServerID):
     for R in Serv:
         W = work(R[0], R[1], R[2], date)
         if Gzip == 'YES':
-            print (f'Create Gzip: {datetime.datetime.now()}')
+            print ('Create Gzip:'% (datetime.datetime.now()))
             W.CreateGzip()
-        print (f'Put file to FTP: {datetime.datetime.now()}')
+        print ('Put file to FTP:'% (datetime.datetime.now()))
         W.PutFtp()
-        print (f'Backup file has Loaded to FTP: {datetime.datetime.now()}')
+        print ('Backup file has Loaded to FTP:'% (datetime.datetime.now()))
         W.RemoveLVM()
         if Gzip == 'YES':
             W.RmFile()
-        print (f'Start cleaning FTP server: {datetime.datetime.now()}')
+        print ('Start cleaning FTP server:'% (datetime.datetime.now()))
         Clean(R[0])
-        print (f'Cleaning has ended: {datetime.datetime.now()}')
+        print ('Cleaning has ended:'% (datetime.datetime.now()))
 
 
 class work:
