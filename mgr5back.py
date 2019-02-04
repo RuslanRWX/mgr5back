@@ -109,7 +109,7 @@ def Search():
 
 def StartBackup(ServerID):
     date = datetime.datetime.now().strftime("%Y%m%d%H%M%S")
-    print ('Start time:'% (datetime.datetime.now()))
+    print ('Start time: %s'% (datetime.datetime.now()))
     print("Start backup-VM ID %s "% (ServerID))
     sql = "select vm,name,pool,size from volume where vm=\'%s\' and hostnode=\'%s\' and pool is not NULL;" % (
         ServerID, NodeID)
@@ -130,17 +130,17 @@ def StartBackup(ServerID):
     for R in Serv:
         W = work(R[0], R[1], R[2], date)
         if Gzip == 'YES':
-            print ('Create Gzip:'% (datetime.datetime.now()))
+            print ('Create Gzip: %s'% (datetime.datetime.now()))
             W.CreateGzip()
-        print ('Put file to FTP:'% (datetime.datetime.now()))
+        print ('Put file to FTP: %s'% (datetime.datetime.now()))
         W.PutFtp()
-        print ('Backup file has Loaded to FTP:'% (datetime.datetime.now()))
+        print ('Backup file has Loaded to FTP: %s'% (datetime.datetime.now()))
         W.RemoveLVM()
         if Gzip == 'YES':
             W.RmFile()
-        print ('Start cleaning FTP server:'% (datetime.datetime.now()))
+        print ('Start cleaning FTP server: %s'% (datetime.datetime.now()))
         Clean(R[0])
-        print ('Cleaning has ended:'% (datetime.datetime.now()))
+        print ('Cleaning has ended: %s'% (datetime.datetime.now()))
 
 
 class work:
