@@ -103,8 +103,14 @@ def Mysqlget(SQL):
 
 
 def Search():
-    sql = "select id from vm where hostnode=\'%s\' and id not in (%s);" % (
-        NodeID, NoBackupID)
+    sql = "select vm.id from vm, volume where vm.id = volume.id and \
+                                              vm.hostnode=\'%s\' and \
+                                              vm.id not in (%s) and \
+                                              volume.size < \'(%d)\' or \
+                                              vm.id = volume.id and \
+                                              vm.hostnode=\'%s\' and \
+                                              vm.id in (%d);" % (
+        NodeID, NoBackupID, VMDiskLessThan, NodeID, ForceBackup)
     Servs = Mysqlget(sql)
     for R in Servs:
         StartBackup(R[0])
@@ -116,10 +122,8 @@ def StartBackup(ServerID):
     print("Start backup-VM ID %s "% (ServerID))
     sql = "select vm,name,pool,size from volume where vm=\'%s\' and \
                                                       hostnode=\'%s\' and \
-                                                      pool is not NULL and \
-                                                      size<\'%d\' or  \
-                                                      vm=\'%d\';" % (
-           ServerID, NodeID, VMDiskLessThan, ForceBackup)
+                                                      pool is not NULL;" % (
+           ServerID, NodeID)
     Serv = Mysqlget(sql)
     if not Serv:
         print("Virtual machine does not exist")
