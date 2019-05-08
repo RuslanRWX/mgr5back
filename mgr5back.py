@@ -48,10 +48,8 @@ def Conf():
     Gzip = Gzip.upper()
     RunClean = config['main']['RunClean']
     RunClean = RunClean.upper()
-    SaveDate = config['main']['SaveDate']
-    SaveDate = int(SaveDate)
-    checkdate = config['main']['checkdate']
-    checkdate = int(checkdate)
+    SaveDate = int(config['main']['SaveDate'])
+    checkdate = int(config['main']['checkdate'])
     check=set()
     Zabbix_Mark_File = config['main']['ZabbixMarkFile']
     Zabbix_LVM_File = config['main']['ZabbixLVMFile']
@@ -113,7 +111,7 @@ def StartBackup(ServerID):
     date = datetime.datetime.now().strftime("%Y%m%d%H%M%S")
     print ('Start time: %s'% (datetime.datetime.now()))
     print("Start backup-VM ID %s "% (ServerID))
-    sql = "select vm,name,pool,size from volume where vm=\'%s\' and hostnode=\'%s\' and pool is not NULL and size<\'%s\';" % (
+    sql = "select vm,name,pool,size from volume where vm=\'%s\' and hostnode=\'%s\' and pool is not NULL and size<\'%d\';" % (
         ServerID, NodeID, VMDiskLessThen)
     Serv = Mysqlget(sql)
     if not Serv:
