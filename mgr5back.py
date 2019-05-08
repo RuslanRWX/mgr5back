@@ -19,6 +19,7 @@ def Conf():
     global NodeID
     global NoBackupID
     global VMDiskLessThan
+    global ForceBackup
     global ftp_conn
     global pidfile
     global BackDir
@@ -39,6 +40,7 @@ def Conf():
     pidfile = config['main']['pidfile']
     BackDir = config['main']['BackDir']
     VMDiskLessThan = int(config['main']['VMDiskLessThan'])
+    ForceBackup = int(config['main']['ForceBackup'])
 
     try:
         os.stat(BackDir)
@@ -112,8 +114,12 @@ def StartBackup(ServerID):
     date = datetime.datetime.now().strftime("%Y%m%d%H%M%S")
     print ('Start time: %s'% (datetime.datetime.now()))
     print("Start backup-VM ID %s "% (ServerID))
-    sql = "select vm,name,pool,size from volume where vm=\'%s\' and hostnode=\'%s\' and pool is not NULL and size<\'%d\';" % (
-        ServerID, NodeID, VMDiskLessThan)
+    sql = "select vm,name,pool,size from volume where vm=\'%s\' and \
+                                                      hostnode=\'%s\' and \
+                                                      pool is not NULL and \
+                                                      size<\'%d\' or  \
+                                                      vm=\'%d\';" % (
+           ServerID, NodeID, VMDiskLessThan, ForceBackup)
     Serv = Mysqlget(sql)
     if not Serv:
         print("Virtual machine does not exist")
