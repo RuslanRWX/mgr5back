@@ -417,6 +417,9 @@ def listF():
     for R in Servs:
         print("VM ID: ", R[0], " Name Store:", R[1], " IP:", R[2], " Memory:", R[3], "M CPU:", R[4], " VSize:", R[5], "M Pool Name: ", R[6])
     print("Note: not backup ID: ", NoBackupID)
+    print("Note: : Skip backup if the disk is more than: ", VMDiskLessThan)
+
+
 
 
 def stat():
