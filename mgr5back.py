@@ -40,7 +40,7 @@ def Conf():
     pidfile = config['main']['pidfile']
     BackDir = config['main']['BackDir']
     VMDiskLessThan = int(config['main']['VMDiskLessThan'])
-    ForceBackup = int(config['main']['ForceBackup'])
+    ForceBackup = config['main']['ForceBackup']
 
     try:
         os.stat(BackDir)
@@ -109,7 +109,7 @@ def Search():
                                               volume.size < \'(%d)\' or \
                                               vm.id = volume.id and \
                                               vm.hostnode=\'%s\' and \
-                                              vm.id in (%d);" % (
+                                              vm.id in (%s);" % (
         NodeID, NoBackupID, VMDiskLessThan, NodeID, ForceBackup)
     Servs = Mysqlget(sql)
     for R in Servs:
