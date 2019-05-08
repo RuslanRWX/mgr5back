@@ -1,6 +1,6 @@
 #!/usr/bin/env python
 # Copyright (c) 2017 Ruslan Variushkin,  ruslan@host4.biz
-# Version 0.4.8
+# Version 0.4.9
 # mgr5back.py is an open-source software to backup virtual machines on the
 # ISP VMmanager version 5
 import sys
@@ -18,6 +18,7 @@ def Conf():
     config.read(os.path.join(os.path.dirname(__file__), 'config.ini'))
     global NodeID
     global NoBackupID
+    global VMDiskLessThen
     global ftp_conn
     global pidfile
     global BackDir
@@ -37,6 +38,7 @@ def Conf():
     ftp_conn = config['main']['ftp_conn']
     pidfile = config['main']['pidfile']
     BackDir = config['main']['BackDir']
+    VMDiskLessThen = config(['main']['VMDiskLessThen'])
     try:
         os.stat(BackDir)
     except:
@@ -111,8 +113,8 @@ def StartBackup(ServerID):
     date = datetime.datetime.now().strftime("%Y%m%d%H%M%S")
     print ('Start time: %s'% (datetime.datetime.now()))
     print("Start backup-VM ID %s "% (ServerID))
-    sql = "select vm,name,pool,size from volume where vm=\'%s\' and hostnode=\'%s\' and pool is not NULL;" % (
-        ServerID, NodeID)
+    sql = "select vm,name,pool,size from volume where vm=\'%s\' and hostnode=\'%s\' and pool is not NULL and size<\'%s\';" % (
+        ServerID, NodeID, VMDiskLessThen)
     Serv = Mysqlget(sql)
     if not Serv:
         print("Virtual machine does not exist")
