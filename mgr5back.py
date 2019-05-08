@@ -38,7 +38,7 @@ def Conf():
     ftp_conn = config['main']['ftp_conn']
     pidfile = config['main']['pidfile']
     BackDir = config['main']['BackDir']
-    VMDiskLessThen = config(['main']['VMDiskLessThen'])
+    VMDiskLessThen = int(config(['main']['VMDiskLessThen']))
     try:
         os.stat(BackDir)
     except:
