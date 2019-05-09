@@ -345,7 +345,7 @@ def ftpdel(path):
 
 def chlvm():
     print("Start check the logical volumes")
-    cmd = "lvs | grep snapshot"
+    cmd = "lvs | grep -w snapshot"
     Ch = os.system(cmd)
     if Ch:
         print("LVM OK")
