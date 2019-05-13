@@ -378,22 +378,22 @@ def chftp():
             except:
                 print("Not directory NodeID on the backup sever")
                 return
-            ListDirs = w.List()
-            resultDir = [x for x in ListDirs if dateCh <= x]
-            if resultDir != []:
-                for ts in resultDir:
-                    file = "~/%s/%s/%s/" % (NodeID, R[0], ts)
-                    w.ftp.cwd(file)
-                    ChF = "%s_%s" % (R[1], ts)
-                    try:
-                        FileR = w.List()
-                        if [E for E in FileR if ChF == E]:
-                            # print "Check file %s is OK "%(ChF)
-                            CheckFile = "0"
-                        else:
+                ListDirs = w.List()
+                resultDir = [x for x in ListDirs if dateCh <= x]
+                if resultDir != []:
+                    for ts in resultDir:
+                        file = "~/%s/%s/%s/" % (NodeID, R[0], ts)
+                        w.ftp.cwd(file)
+                        ChF = "%s_%s" % (R[1], ts)
+                        try:
+                            FileR = w.List()
+                            if [E for E in FileR if ChF == E]:
+                                # print "Check file %s is OK "%(ChF)
+                                CheckFile = "0"
+                            else:
+                                pass
+                        except:
                             pass
-                    except:
-                        pass
         except:
             resultDir0 = "NonDir"
         from colorama import Fore
