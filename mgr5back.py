@@ -103,7 +103,7 @@ def Mysqlget(SQL):
 
 
 def Search():
-    sql = "select vm.id from vm, volume where vm.id = volume.id and \
+    sql = "select vm.id from vm, volume where vm.id = volume.vm and \
                                               vm.hostnode=\'%s\' and \
                                               vm.id not in (%s) and \
                                               volume.size < \'(%d)\' or \
