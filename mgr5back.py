@@ -109,7 +109,7 @@ def Search():
                                               vm.hostnode=\'%s\' and \
                                               vm.id not in (%s) and \
                                               volume.size < \'(%d)\' or \
-                                              vm.id = volume.id and \
+                                              vm.id = volume.vm and \
                                               vm.hostnode=\'%s\' and \
                                               vm.id in (%s);" % (
         NodeID, NoBackupID, VMDiskLessThan, NodeID, ForceBackup)
