@@ -108,11 +108,11 @@ def Search():
     sql = "select vm.id from vm, volume where vm.id = volume.vm and \
                                               vm.hostnode=\'%s\' and \
                                               vm.id not in (%s) and \
-                                              volume.size < \'(%d)\' or \
+                                              volume.size < \'%d\' or \
                                               vm.id = volume.vm and \
                                               vm.hostnode=\'%s\' and \
                                               vm.id in (%s);" % (
-        NodeID, NoBackupID, VMDiskLessThan, NodeID, ForceBackup)
+          NodeID, NoBackupID, VMDiskLessThan, NodeID, ForceBackup)
     Servs = Mysqlget(sql)
     for R in Servs:
         StartBackup(R[0])
