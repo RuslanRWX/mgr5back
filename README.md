@@ -26,7 +26,7 @@ pip install colorama
 ##########
 
 # Развертывание 
-<br>git clone https://github.com/ruslansvs2/mgr5back.git
+<br>git clone https://github.com/RuslanRWX/mgr5back.git
 <br>Описание содержимого в каталоге 
 <br>
 # Add Jobs To cron
